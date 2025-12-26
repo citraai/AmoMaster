@@ -30,6 +30,8 @@ export default function RecordsPage() {
     const [records, setRecords] = useState<(Preference | Quote)[]>([]);
     const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
     const [searchQuery, setSearchQuery] = useState("");
+    const [dateFilter, setDateFilter] = useState<"all" | "today" | "week" | "month" | "custom">("all");
+    const [customDate, setCustomDate] = useState("");
     const [editingRecord, setEditingRecord] = useState<Preference | Quote | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -88,8 +90,34 @@ export default function RecordsPage() {
             result = result.filter(r => r.content.toLowerCase().includes(query));
         }
 
+        // 日付フィルタ
+        if (dateFilter !== "all") {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            result = result.filter(r => {
+                const recordDate = new Date(r.createdAt);
+
+                if (dateFilter === "today") {
+                    return recordDate >= today;
+                } else if (dateFilter === "week") {
+                    const weekAgo = new Date(today);
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    return recordDate >= weekAgo;
+                } else if (dateFilter === "month") {
+                    const monthAgo = new Date(today);
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    return recordDate >= monthAgo;
+                } else if (dateFilter === "custom" && customDate) {
+                    const targetDate = new Date(customDate);
+                    return recordDate.toDateString() === targetDate.toDateString();
+                }
+                return true;
+            });
+        }
+
         return result;
-    }, [records, activeFilter, searchQuery]);
+    }, [records, activeFilter, searchQuery, dateFilter, customDate]);
 
     const handleRecordSaved = () => {
         loadRecords();
@@ -152,6 +180,45 @@ export default function RecordsPage() {
                             ✕
                         </button>
                     )}
+                </div>
+            </div>
+
+            {/* 日付フィルター */}
+            <div className="max-w-lg mx-auto px-4 pb-2">
+                <div className="flex gap-2 items-center">
+                    <span className="text-white/40 text-xs">📅</span>
+                    <div className="flex gap-1.5 overflow-x-auto hide-scrollbar">
+                        {[
+                            { key: "all", label: "全期間" },
+                            { key: "today", label: "今日" },
+                            { key: "week", label: "1週間" },
+                            { key: "month", label: "1ヶ月" },
+                        ].map((option) => (
+                            <button
+                                key={option.key}
+                                onClick={() => {
+                                    setDateFilter(option.key as typeof dateFilter);
+                                    if (option.key !== "custom") setCustomDate("");
+                                }}
+                                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${dateFilter === option.key
+                                        ? "bg-purple-500/30 text-purple-300 border border-purple-500/50"
+                                        : "bg-white/5 text-white/50 hover:bg-white/10"
+                                    }`}
+                            >
+                                {option.label}
+                            </button>
+                        ))}
+                        <input
+                            type="date"
+                            value={customDate}
+                            onChange={(e) => {
+                                setCustomDate(e.target.value);
+                                if (e.target.value) setDateFilter("custom");
+                            }}
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-white/5 text-white/50 hover:bg-white/10 ${dateFilter === "custom" ? "border border-purple-500/50" : ""
+                                }`}
+                        />
+                    </div>
                 </div>
             </div>
 
