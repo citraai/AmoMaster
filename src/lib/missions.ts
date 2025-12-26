@@ -33,39 +33,39 @@ export interface UserProgress {
 
 // レベルテーブル
 export const LEVELS: Level[] = [
-    { level: 1, requiredXp: 0, title: "新米彼氏" },
-    { level: 2, requiredXp: 50, title: "見習い彼氏" },
-    { level: 3, requiredXp: 150, title: "一人前彼氏" },
-    { level: 4, requiredXp: 300, title: "ベテラン彼氏" },
-    { level: 5, requiredXp: 500, title: "彼女マスター" },
+    { level: 1, requiredXp: 0, title: "初心者" },
+    { level: 2, requiredXp: 50, title: "見習い" },
+    { level: 3, requiredXp: 150, title: "一人前" },
+    { level: 4, requiredXp: 300, title: "ベテラン" },
+    { level: 5, requiredXp: 500, title: "パートナーマスター" },
     { level: 6, requiredXp: 800, title: "恋愛の達人" },
-    { level: 7, requiredXp: 1200, title: "伝説の彼氏" },
+    { level: 7, requiredXp: 1200, title: "伝説" },
 ];
 
 // ミッションプール
 export const MISSION_POOL: Mission[] = [
     // 記録系（requiredCategoryで検証可能）
-    { id: "record_like", type: "record", title: "好きなものを記録", description: "彼女の好きなものを1つ記録しろ", xp: 10, icon: "💕", requiredCategory: "like" },
-    { id: "record_food", type: "record", title: "食の好みを記録", description: "彼女が食べたいものを記録しろ", xp: 10, icon: "🍽️", requiredCategory: "food" },
-    { id: "record_place", type: "record", title: "行きたい場所を記録", description: "彼女と行きたい場所を記録しろ", xp: 10, icon: "🗺️", requiredCategory: "place" },
-    { id: "record_quote", type: "record", title: "言葉を記録", description: "彼女が言った印象的な言葉を記録しろ", xp: 15, icon: "📝", requiredCategory: "quote" },
-    { id: "record_gift", type: "record", title: "ギフトアイデア", description: "彼女へのプレゼントアイデアを記録しろ", xp: 10, icon: "🎁", requiredCategory: "gift" },
+    { id: "record_like", type: "record", title: "好きなものを記録", description: "パートナーの好きなものを1つ記録しろ", xp: 10, icon: "💕", requiredCategory: "like" },
+    { id: "record_food", type: "record", title: "食の好みを記録", description: "パートナーが食べたいものを記録しろ", xp: 10, icon: "🍽️", requiredCategory: "food" },
+    { id: "record_place", type: "record", title: "行きたい場所を記録", description: "パートナーと行きたい場所を記録しろ", xp: 10, icon: "🗺️", requiredCategory: "place" },
+    { id: "record_quote", type: "record", title: "言葉を記録", description: "パートナーが言った印象的な言葉を記録しろ", xp: 15, icon: "📝", requiredCategory: "quote" },
+    { id: "record_gift", type: "record", title: "ギフトアイデア", description: "パートナーへのプレゼントアイデアを記録しろ", xp: 10, icon: "🎁", requiredCategory: "gift" },
 
     // 行動系（自己申告）
     { id: "action_snack", type: "action", title: "サプライズスイーツ", description: "帰りにお気に入りのスイーツを買って帰れ", xp: 20, icon: "🍰" },
-    { id: "action_message", type: "action", title: "愛のメッセージ", description: "彼女に「好き」とLINEしろ", xp: 15, icon: "💌" },
-    { id: "action_hug", type: "action", title: "ハグミッション", description: "今日中に彼女をハグしろ", xp: 15, icon: "🤗" },
-    { id: "action_date", type: "action", title: "デートプラン", description: "次のデートプランを彼女に提案しろ", xp: 25, icon: "📅" },
+    { id: "action_message", type: "action", title: "愛のメッセージ", description: "パートナーに「好き」とLINEしろ", xp: 15, icon: "💌" },
+    { id: "action_hug", type: "action", title: "ハグミッション", description: "今日中にパートナーをハグしろ", xp: 15, icon: "🤗" },
+    { id: "action_date", type: "action", title: "デートプラン", description: "次のデートプランをパートナーに提案しろ", xp: 25, icon: "📅" },
 
     // 観察系（自己申告）
-    { id: "observe_clothes", type: "observe", title: "服装チェック", description: "今日の彼女の服装を覚えておけ", xp: 10, icon: "👗" },
-    { id: "observe_mood", type: "observe", title: "気分チェック", description: "彼女の今日の気分を観察しろ", xp: 10, icon: "🔍" },
-    { id: "observe_hair", type: "observe", title: "ヘアスタイル", description: "彼女の髪型の変化に気づけ", xp: 15, icon: "💇" },
+    { id: "observe_clothes", type: "observe", title: "服装チェック", description: "今日のパートナーの服装を覚えておけ", xp: 10, icon: "👗" },
+    { id: "observe_mood", type: "observe", title: "気分チェック", description: "パートナーの今日の気分を観察しろ", xp: 10, icon: "🔍" },
+    { id: "observe_hair", type: "observe", title: "ヘアスタイル", description: "パートナーの髪型の変化に気づけ", xp: 15, icon: "💇" },
 
     // コミュニケーション系（自己申告）
-    { id: "comm_praise", type: "communicate", title: "褒めミッション", description: "彼女を3回褒めろ", xp: 20, icon: "👏" },
-    { id: "comm_listen", type: "communicate", title: "傾聴ミッション", description: "彼女の話を10分間しっかり聞け", xp: 15, icon: "👂" },
-    { id: "comm_ask", type: "communicate", title: "質問ミッション", description: "彼女に興味を持って質問しろ", xp: 15, icon: "❓" },
+    { id: "comm_praise", type: "communicate", title: "褒めミッション", description: "パートナーを3回褒めろ", xp: 20, icon: "👏" },
+    { id: "comm_listen", type: "communicate", title: "傾聴ミッション", description: "パートナーの話を10分間しっかり聞け", xp: 15, icon: "👂" },
+    { id: "comm_ask", type: "communicate", title: "質問ミッション", description: "パートナーに興味を持って質問しろ", xp: 15, icon: "❓" },
 ];
 
 const PROGRESS_KEY = "herspecialist_user_progress";

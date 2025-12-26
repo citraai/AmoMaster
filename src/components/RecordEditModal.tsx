@@ -91,7 +91,7 @@ export default function RecordEditModal({ record, isOpen, onClose, onSaved }: Re
                     {/* メイン入力 */}
                     <div>
                         <label className="block text-white/60 text-xs mb-2">
-                            {isQuote(record) ? "彼女の言葉" : "内容"}
+                            {isQuote(record) ? "パートナーの言葉" : "内容"}
                         </label>
                         <textarea
                             value={content}

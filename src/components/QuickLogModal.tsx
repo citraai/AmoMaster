@@ -131,7 +131,7 @@ export default function QuickLogModal({
                                 onKeyPress={handleKeyPress}
                                 placeholder={
                                     category === "quote"
-                                        ? "彼女が言った言葉を記録..."
+                                        ? "パートナーが言った言葉を記録..."
                                         : "何を記録する？"
                                 }
                                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-red-500/50 transition-all mb-4"

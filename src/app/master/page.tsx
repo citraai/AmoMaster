@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { getSettings } from "@/lib/storage";
 import { sendMessage, detectProvider, getProviderLabel, AIProvider } from "@/lib/ai/ai-service";
+import { getPartnerLabelFromDB } from "@/lib/user-profile";
 
 interface Message {
     id: string;
@@ -17,14 +17,15 @@ export default function MasterPage() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState("");
     const [isTyping, setIsTyping] = useState(false);
-    const [partnerName, setPartnerName] = useState("彼女");
+    const [partnerName, setPartnerName] = useState("パートナー");
     const [currentProvider, setCurrentProvider] = useState<AIProvider>("mock");
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const init = async () => {
-            const settings = getSettings();
-            setPartnerName(settings.partnerName);
+            // DBからパートナー呼称を取得
+            const label = await getPartnerLabelFromDB();
+            setPartnerName(label);
 
             // AIプロバイダーを検出
             const provider = await detectProvider();
@@ -34,7 +35,7 @@ export default function MasterPage() {
                 {
                     id: "welcome",
                     role: "master",
-                    content: `よう、来たな。${settings.partnerName}のことで悩みでもあるのか？何でも聞いてやる。ただし、甘ったれた質問には容赦なく喝を入れるからな 👊`,
+                    content: `よう、来たな。${label}のことで悩みでもあるのか？何でも聞いてやる。ただし、甘ったれた質問には容赦なく喝を入れるからな 👊`,
                     timestamp: new Date(),
                 },
             ]);
@@ -154,8 +155,8 @@ export default function MasterPage() {
                                     </p>
                                     {message.provider && message.role === "master" && (
                                         <span className={`text-[8px] px-1.5 py-0.5 rounded-full ${message.provider === "nano" ? "bg-green-500/20 text-green-400" :
-                                                message.provider === "api" ? "bg-blue-500/20 text-blue-400" :
-                                                    "bg-yellow-500/20 text-yellow-400"
+                                            message.provider === "api" ? "bg-blue-500/20 text-blue-400" :
+                                                "bg-yellow-500/20 text-yellow-400"
                                             }`}>
                                             {message.provider === "nano" ? "🏠 Nano" :
                                                 message.provider === "api" ? "☁️ API" : "🎭 Demo"}

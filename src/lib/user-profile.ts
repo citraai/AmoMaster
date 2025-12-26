@@ -89,3 +89,27 @@ export function getDynamicText(key: string): string {
 
     return texts[key] || key;
 }
+
+// DB版: パートナー呼称を取得（非同期）
+export async function getPartnerLabelFromDB(): Promise<string> {
+    try {
+        const response = await fetch("/api/user/profile");
+        if (!response.ok) {
+            return "パートナー"; // デフォルト
+        }
+        const profile = await response.json();
+
+        switch (profile.partnerPronoun) {
+            case "he":
+                return "彼";
+            case "she":
+                return "彼女";
+            case "partner":
+            default:
+                return "パートナー";
+        }
+    } catch (error) {
+        console.error("[Profile] Error fetching partner label:", error);
+        return "パートナー";
+    }
+}
