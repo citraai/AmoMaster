@@ -9,6 +9,11 @@ export const users = sqliteTable("users", {
     gender: text("gender"), // "male" | "female" | "other" | "unspecified"
     genderCustom: text("gender_custom"), // その他の場合の自由入力
     partnerPronoun: text("partner_pronoun"), // "he" | "she" | "partner"
+    // 収益化関連
+    trialStartDate: text("trial_start_date"), // トライアル開始日
+    aiUsageCount: integer("ai_usage_count").notNull().default(0), // 今日のAI使用回数
+    aiUsageDate: text("ai_usage_date"), // 使用日（日付リセット用）
+    isPremium: integer("is_premium", { mode: "boolean" }).notNull().default(false), // プレミアム会員
     createdAt: text("created_at").notNull(),
     updatedAt: text("updated_at"),
 });

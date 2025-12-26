@@ -19,6 +19,12 @@ export default function MasterPage() {
     const [isTyping, setIsTyping] = useState(false);
     const [partnerName, setPartnerName] = useState("パートナー");
     const [currentProvider, setCurrentProvider] = useState<AIProvider>("mock");
+    const [usageInfo, setUsageInfo] = useState<{
+        remainingCount: number;
+        canUse: boolean;
+        inTrial: boolean;
+        trialDaysLeft: number;
+    } | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -30,6 +36,17 @@ export default function MasterPage() {
             // AIプロバイダーを検出
             const provider = await detectProvider();
             setCurrentProvider(provider);
+
+            // AI使用状況を取得
+            try {
+                const res = await fetch("/api/ai/usage");
+                if (res.ok) {
+                    const data = await res.json();
+                    setUsageInfo(data);
+                }
+            } catch (error) {
+                console.error("Usage fetch error:", error);
+            }
 
             setMessages([
                 {
@@ -50,6 +67,19 @@ export default function MasterPage() {
     const handleSend = async () => {
         if (!inputValue.trim() || isTyping) return;
 
+        // 使用制限チェック
+        if (usageInfo && !usageInfo.canUse) {
+            const limitMessage: Message = {
+                id: Date.now().toString(),
+                role: "master",
+                content: "おいおい、今日の質問回数を使い切ったぞ。明日また来い。それか、プレミアムになれば無制限だ 💫",
+                timestamp: new Date(),
+                provider: "mock",
+            };
+            setMessages((prev) => [...prev, limitMessage]);
+            return;
+        }
+
         const userMessage: Message = {
             id: Date.now().toString(),
             role: "user",
@@ -62,6 +92,13 @@ export default function MasterPage() {
         setIsTyping(true);
 
         try {
+            // 使用回数をインクリメント
+            const usageRes = await fetch("/api/ai/usage", { method: "POST" });
+            if (usageRes.ok) {
+                const usageData = await usageRes.json();
+                setUsageInfo(prev => prev ? { ...prev, remainingCount: usageData.remainingCount, canUse: usageData.remainingCount !== 0 } : null);
+            }
+
             // AIサービスを呼び出し
             const response = await sendMessage(userMessage.content);
 
@@ -117,11 +154,33 @@ export default function MasterPage() {
                             <p className="text-white/40 text-[10px]">毒舌だが愛はある</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full">
-                        <span className={`w-2 h-2 rounded-full ${getProviderColor(currentProvider)} animate-pulse`} />
-                        <span className="text-xs text-white/60">
-                            {currentProvider === "nano" ? "Nano" : currentProvider === "api" ? "API" : "Demo"}
-                        </span>
+                    <div className="flex items-center gap-2">
+                        {/* 残り回数表示 */}
+                        {usageInfo && (
+                            <div className={`px-2 py-1 rounded-full text-xs ${usageInfo.inTrial
+                                    ? "bg-green-500/20 text-green-300"
+                                    : usageInfo.remainingCount === -1
+                                        ? "bg-purple-500/20 text-purple-300"
+                                        : usageInfo.remainingCount === 0
+                                            ? "bg-red-500/20 text-red-300"
+                                            : "bg-blue-500/20 text-blue-300"
+                                }`}>
+                                {usageInfo.inTrial ? (
+                                    <span>🎁 トライアル残り{usageInfo.trialDaysLeft}日</span>
+                                ) : usageInfo.remainingCount === -1 ? (
+                                    <span>👑 無制限</span>
+                                ) : (
+                                    <span>残り{usageInfo.remainingCount}回</span>
+                                )}
+                            </div>
+                        )}
+                        {/* プロバイダー表示 */}
+                        <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full">
+                            <span className={`w-2 h-2 rounded-full ${getProviderColor(currentProvider)} animate-pulse`} />
+                            <span className="text-xs text-white/60">
+                                {currentProvider === "nano" ? "Nano" : currentProvider === "api" ? "API" : "Demo"}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </header>
