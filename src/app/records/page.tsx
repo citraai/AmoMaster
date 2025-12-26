@@ -125,7 +125,7 @@ export default function RecordsPage() {
                         </Link>
                         <div>
                             <h1 className="text-white font-bold text-lg">📚 記録一覧</h1>
-                            <p className="text-white/40 text-[10px]">彼女の「好き」を全部覚えてやれ</p>
+                            <p className="text-white/40 text-[10px]">パートナーの「好き」を全部覚えてやれ</p>
                         </div>
                     </div>
                 </div>

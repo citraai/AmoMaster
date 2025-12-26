@@ -220,9 +220,9 @@ export function deleteEvent(id: string): void {
 // ==================== Settings ====================
 
 export function getSettings(): Settings {
-    if (typeof window === "undefined") return { partnerName: "彼女" };
+    if (typeof window === "undefined") return { partnerName: "パートナー" };
     const data = localStorage.getItem(SETTINGS_KEY);
-    return data ? JSON.parse(data) : { partnerName: "彼女" };
+    return data ? JSON.parse(data) : { partnerName: "パートナー" };
 }
 
 export function updateSettings(settings: Settings): void {
