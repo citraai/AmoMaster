@@ -7,7 +7,7 @@
 
 import { isNanoAvailable, generateWithNano } from "./gemini-nano";
 import { isApiAvailable, generateWithApi } from "./openai-api";
-import { buildRagContext } from "./rag";
+import { buildRagContextAsync } from "./rag";
 import { MASTER_SYSTEM_PROMPT } from "./prompts";
 
 export type AIProvider = "nano" | "api" | "mock";
@@ -60,8 +60,9 @@ function generateMockResponse(query: string): string {
 export async function sendMessage(userMessage: string): Promise<AIResponse> {
     const provider = await detectProvider();
 
-    // RAGコンテキストを構築
-    const ragContext = buildRagContext(userMessage);
+    // RAGコンテキストを構築（DBから非同期で取得）
+    const ragContext = await buildRagContextAsync(userMessage);
+    console.log("[DEBUG] RAG Context:", ragContext);
 
     // プロンプトを構築
     const fullPrompt = `${ragContext}\n\n---\nユーザーの質問: ${userMessage}`;
