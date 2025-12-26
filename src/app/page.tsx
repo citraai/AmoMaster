@@ -138,7 +138,7 @@ export default function Home() {
         {/* ウェルカムセクション */}
         <section className="pt-6 pb-5 animate-fadeInUp">
           <p className="text-white/70 text-sm mb-1">おかえり、野郎ども 👊</p>
-          <h2 className="text-2xl font-bold text-white heading-tight">
+          <h2 className="text-2xl font-bold text-white heading-tight" style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}>
             今日も<span className="text-gradient">戦う</span>準備はいいか？
           </h2>
         </section>

@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Zen_Maru_Gothic, Kiwi_Maru } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const zenMaruGothic = Zen_Maru_Gothic({
+  variable: "--font-zen-maru",
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const kiwiMaru = Kiwi_Maru({
+  variable: "--font-kiwi-maru",
   subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -31,13 +33,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className="dark">
+    <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
+        className={`${zenMaruGothic.variable} ${kiwiMaru.variable} antialiased min-h-screen`}
+        style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
       >
         <Providers>{children}</Providers>
       </body>
     </html>
   );
 }
-
