@@ -2,7 +2,7 @@
  * 地雷チェッカー - NGログとのマッチングでリスクを評価
  */
 
-import { getPreferences } from "@/lib/storage";
+import * as dataService from "@/lib/data-service";
 import type { Preference } from "@/lib/types";
 
 export interface MineCheckResult {
@@ -17,10 +17,16 @@ export interface MineCheckResult {
 }
 
 /**
- * NGキーワードを取得
+ * NGキーワードを取得（非同期・DB版）
  */
-function getNGRecords(): Preference[] {
-    return getPreferences().filter(p => p.category === "ng");
+async function getNGRecordsAsync(): Promise<Preference[]> {
+    try {
+        const preferences = await dataService.getPreferences();
+        return preferences.filter((p: Preference) => p.category === "ng");
+    } catch (error) {
+        console.error("[MineChecker] Error fetching NG records:", error);
+        return [];
+    }
 }
 
 /**
@@ -103,10 +109,10 @@ function calculateSimilarity(str1: string, str2: string): number {
 }
 
 /**
- * 入力テキストをNG記録と照合
+ * 入力テキストをNG記録と照合（非同期版）
  */
-export function checkMine(input: string): MineCheckResult {
-    const ngRecords = getNGRecords();
+export async function checkMineAsync(input: string): Promise<MineCheckResult> {
+    const ngRecords = await getNGRecordsAsync();
     const matchedNGs: MineCheckResult["matchedNGs"] = [];
     let totalScore = 0;
 
@@ -159,6 +165,20 @@ export function checkMine(input: string): MineCheckResult {
         riskLevel,
         matchedNGs,
         advice,
+    };
+}
+
+/**
+ * 後方互換用同期版（空の結果を返す）
+ * @deprecated 非同期版 checkMineAsync を使用してください
+ */
+export function checkMine(input: string): MineCheckResult {
+    console.warn("[MineChecker] checkMine is deprecated, use checkMineAsync instead");
+    return {
+        riskScore: 0,
+        riskLevel: "safe",
+        matchedNGs: [],
+        advice: "✅ チェック中... 非同期版を使用してください。",
     };
 }
 

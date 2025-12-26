@@ -9,7 +9,6 @@
 
 import { Preference, Quote, CATEGORY_LABELS } from "@/lib/types";
 import * as dataService from "@/lib/data-service";
-import { getSettings } from "@/lib/storage";
 
 // 簡易キーワード抽出（形態素解析の代替）
 const STOP_WORDS = new Set([
@@ -141,36 +140,19 @@ export async function buildRagContextAsync(query: string): Promise<string> {
     return context;
 }
 
-// 後方互換性のため同期版も残す（LocalStorageから取得）
-import { getAllRecords } from "@/lib/storage";
-
-export function searchRelevantRecords(
-    query: string,
-    limit: number = 5
-): (Preference | Quote)[] {
-    const keywords = extractKeywords(query);
-    if (keywords.length === 0) {
-        return getAllRecords().slice(0, limit);
-    }
-
-    const records = getAllRecords();
-    const scored = records
-        .map((r) => ({ record: r, score: scoreRecord(r, keywords) }))
-        .filter((s) => s.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, limit);
-
-    return scored.map((s) => s.record);
+// 後方互換 - 非同期版を使用してください
+/**
+ * @deprecated buildRagContextAsync を使用してください
+ */
+export function searchRelevantRecords(): (Preference | Quote)[] {
+    console.warn("[RAG] searchRelevantRecords is deprecated, use async version");
+    return [];
 }
 
-export function buildRagContext(query: string): string {
-    const settings = getSettings();
-    const relevantRecords = searchRelevantRecords(query, 5);
-
-    if (relevantRecords.length === 0) {
-        return `パートナー名: ${settings.partnerName}\n記録: まだ記録がありません`;
-    }
-
-    const compressed = relevantRecords.map(compressRecord).join("\n");
-    return `パートナー名: ${settings.partnerName}\n\n関連する記録:\n${compressed}`;
+/**
+ * @deprecated buildRagContextAsync を使用してください
+ */
+export function buildRagContext(): string {
+    console.warn("[RAG] buildRagContext is deprecated, use buildRagContextAsync");
+    return "まだ記録がありません";
 }

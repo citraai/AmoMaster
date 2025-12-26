@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { checkMine, getRiskColor, getRiskLabel, type MineCheckResult } from "@/lib/ai/mine-checker";
+import { checkMineAsync, getRiskColor, getRiskLabel, type MineCheckResult } from "@/lib/ai/mine-checker";
 import QuickLogModal from "@/components/QuickLogModal";
 
 export default function MineCheckerPage() {
@@ -11,17 +11,19 @@ export default function MineCheckerPage() {
     const [isChecking, setIsChecking] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleCheck = () => {
+    const handleCheck = async () => {
         if (!input.trim()) return;
 
         setIsChecking(true);
 
-        // 少し遅延を入れてUX向上
-        setTimeout(() => {
-            const checkResult = checkMine(input);
+        try {
+            const checkResult = await checkMineAsync(input);
             setResult(checkResult);
+        } catch (error) {
+            console.error("地雷チェックエラー:", error);
+        } finally {
             setIsChecking(false);
-        }, 500);
+        }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {

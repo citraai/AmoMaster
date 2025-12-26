@@ -160,6 +160,84 @@ function getAllTodayRecords(): Array<{ category: string; createdAt: string }> {
     return records;
 }
 
+// 今日の全記録を取得（DB版・非同期）
+async function getAllTodayRecordsAsync(): Promise<Array<{ category: string; createdAt: string }>> {
+    try {
+        const { getPreferences, getQuotes } = await import("@/lib/data-service");
+        const today = getTodayString();
+        const records: Array<{ category: string; createdAt: string }> = [];
+
+        // Preferences
+        const prefs = await getPreferences();
+        for (const p of prefs) {
+            if (p.createdAt?.startsWith(today)) {
+                records.push({ category: p.category, createdAt: p.createdAt });
+            }
+        }
+
+        // Quotes
+        const quotes = await getQuotes();
+        for (const q of quotes) {
+            if (q.createdAt?.startsWith(today)) {
+                records.push({ category: "quote", createdAt: q.createdAt });
+            }
+        }
+
+        return records;
+    } catch (error) {
+        console.error("[Missions] Error fetching records:", error);
+        return [];
+    }
+}
+
+// 非同期版: 今日の記録をチェックしてミッション達成を自動判定
+export async function checkAndCompleteRecordMissionsAsync(): Promise<void> {
+    try {
+        const { getUserProgress: getDBProgress, updateUserProgress } = await import("@/lib/data-service");
+
+        const today = getTodayString();
+        const todayMissions = getTodayMissions();
+        const progress = await getDBProgress();
+
+        // 今日の記録を取得（DB版）
+        const allRecords = await getAllTodayRecordsAsync();
+
+        let updated = false;
+        const completedMissions = progress.completedMissions || [];
+
+        for (const mission of todayMissions) {
+            // 記録系ミッションのみ
+            if (mission.type !== "record" || !mission.requiredCategory) continue;
+
+            // 既に達成済み
+            if (completedMissions.includes(mission.id)) continue;
+
+            // 今日そのカテゴリの記録があるか確認
+            const hasRecord = allRecords.some(r =>
+                r.category === mission.requiredCategory &&
+                r.createdAt.startsWith(today)
+            );
+
+            if (hasRecord) {
+                completedMissions.push(mission.id);
+                progress.xp = (progress.xp || 0) + mission.xp;
+                progress.totalCompleted = (progress.totalCompleted || 0) + 1;
+                updated = true;
+            }
+        }
+
+        if (updated) {
+            await updateUserProgress({
+                ...progress,
+                completedMissions,
+                lastMissionDate: today,
+            });
+        }
+    } catch (error) {
+        console.error("[Missions] Error checking missions:", error);
+    }
+}
+
 // 今日のミッションを取得（3つ）
 export function getTodayMissions(): Mission[] {
     const today = getTodayString();
