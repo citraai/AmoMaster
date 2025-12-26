@@ -4,38 +4,39 @@
 
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { db } from "@/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import * as dbOps from "@/db/operations";
 
 export async function GET() {
     try {
         const session = await auth();
+        console.log("[Profile API] Session:", session?.user?.email, session?.user?.id);
 
-        if (!session?.user?.email) {
+        if (!session?.user?.id) {
+            console.log("[Profile API] No session user ID");
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const user = await db
-            .select()
-            .from(users)
-            .where(eq(users.email, session.user.email))
-            .limit(1);
+        const profile = await dbOps.getUserProfile(session.user.id);
+        console.log("[Profile API] Profile from DB:", profile);
 
-        if (user.length === 0) {
+        if (!profile) {
+            console.log("[Profile API] No profile found, returning default");
             return NextResponse.json({
                 partnerPronoun: "partner",
                 gender: null,
             });
         }
 
-        return NextResponse.json({
-            partnerPronoun: user[0].partnerPronoun || "partner",
-            gender: user[0].gender,
-            name: user[0].name,
-        });
+        const response = {
+            partnerPronoun: profile.partnerPronoun || "partner",
+            gender: profile.gender,
+            name: profile.name,
+        };
+        console.log("[Profile API] Returning:", response);
+
+        return NextResponse.json(response);
     } catch (error) {
-        console.error("[API] Profile error:", error);
+        console.error("[Profile API] Error:", error);
         return NextResponse.json({ error: "Internal error" }, { status: 500 });
     }
 }
