@@ -42,6 +42,16 @@ export async function deletePreference(id: string) {
     });
 }
 
+export async function updatePreference(id: string, data: {
+    content?: string;
+    tags?: string[];
+}) {
+    return fetchApi("/api/data", {
+        method: "PUT",
+        body: JSON.stringify({ type: "preference", id, data }),
+    });
+}
+
 // ==================== Quotes ====================
 
 export async function getQuotes() {
@@ -62,6 +72,17 @@ export async function createQuote(data: {
 export async function deleteQuote(id: string) {
     return fetchApi(`/api/data?type=quote&id=${id}`, {
         method: "DELETE",
+    });
+}
+
+export async function updateQuote(id: string, data: {
+    content?: string;
+    context?: string;
+    tags?: string[];
+}) {
+    return fetchApi("/api/data", {
+        method: "PUT",
+        body: JSON.stringify({ type: "quote", id, data }),
     });
 }
 

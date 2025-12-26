@@ -123,3 +123,36 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+
+// PUT - データ更新
+export async function PUT(request: NextRequest) {
+    try {
+        const session = await auth();
+
+        if (!session?.user?.id) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const userId = session.user.id;
+        const body = await request.json();
+        const { type, id, data } = body;
+
+        if (!id) {
+            return NextResponse.json({ error: "ID required" }, { status: 400 });
+        }
+
+        switch (type) {
+            case "preference":
+                await dbOps.updatePreference(userId, id, data);
+                return NextResponse.json({ success: true });
+            case "quote":
+                await dbOps.updateQuote(userId, id, data);
+                return NextResponse.json({ success: true });
+            default:
+                return NextResponse.json({ error: "Invalid type" }, { status: 400 });
+        }
+    } catch (error) {
+        console.error("[API] PUT Error:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Preference, Quote, RecordCategory, CATEGORY_LABELS, CATEGORY_ICONS } from "@/lib/types";
-import { updatePreference, updateQuote, deletePreference, deleteQuote } from "@/lib/storage";
+import * as dataService from "@/lib/data-service";
 
 interface RecordEditModalProps {
     record: Preference | Quote;
@@ -24,7 +24,7 @@ export default function RecordEditModal({ record, isOpen, onClose, onSaved }: Re
 
     const category: RecordCategory = isQuote(record) ? "quote" : record.category;
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!content.trim()) return;
         setIsSaving(true);
 
@@ -33,32 +33,40 @@ export default function RecordEditModal({ record, isOpen, onClose, onSaved }: Re
             .map((t) => t.trim())
             .filter((t) => t);
 
-        if (isQuote(record)) {
-            updateQuote(record.id, {
-                content: content.trim(),
-                context: context.trim() || undefined,
-                tags: parsedTags.length > 0 ? parsedTags : undefined,
-            });
-        } else {
-            updatePreference(record.id, {
-                content: content.trim(),
-                tags: parsedTags.length > 0 ? parsedTags : undefined,
-            });
+        try {
+            if (isQuote(record)) {
+                await dataService.updateQuote(record.id, {
+                    content: content.trim(),
+                    context: context.trim() || undefined,
+                    tags: parsedTags.length > 0 ? parsedTags : undefined,
+                });
+            } else {
+                await dataService.updatePreference(record.id, {
+                    content: content.trim(),
+                    tags: parsedTags.length > 0 ? parsedTags : undefined,
+                });
+            }
+            onSaved();
+            onClose();
+        } catch (error) {
+            console.error("保存エラー:", error);
+        } finally {
+            setIsSaving(false);
         }
-
-        setIsSaving(false);
-        onSaved();
-        onClose();
     };
 
-    const handleDelete = () => {
-        if (isQuote(record)) {
-            deleteQuote(record.id);
-        } else {
-            deletePreference(record.id);
+    const handleDelete = async () => {
+        try {
+            if (isQuote(record)) {
+                await dataService.deleteQuote(record.id);
+            } else {
+                await dataService.deletePreference(record.id);
+            }
+            onSaved();
+            onClose();
+        } catch (error) {
+            console.error("削除エラー:", error);
         }
-        onSaved();
-        onClose();
     };
 
     if (!isOpen) return null;

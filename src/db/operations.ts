@@ -180,6 +180,22 @@ export async function deleteQuote(userId: string, id: string) {
     await db.delete(quotes).where(and(eq(quotes.id, id), eq(quotes.userId, userId)));
 }
 
+export async function updateQuote(userId: string, id: string, data: {
+    content?: string;
+    context?: string;
+    tags?: string[];
+}) {
+    const updateData: Record<string, unknown> = {};
+
+    if (data.content) updateData.content = data.content;
+    if (data.context !== undefined) updateData.context = data.context || null;
+    if (data.tags !== undefined) updateData.tags = data.tags ? JSON.stringify(data.tags) : null;
+
+    await db.update(quotes)
+        .set(updateData)
+        .where(and(eq(quotes.id, id), eq(quotes.userId, userId)));
+}
+
 // ==================== Events ====================
 
 export async function createEvent(userId: string, data: {
