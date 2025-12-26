@@ -39,10 +39,16 @@ export default function MasterPage() {
 
             // AI使用状況を取得
             try {
+                console.log("[DEBUG] Fetching usage info...");
                 const res = await fetch("/api/ai/usage");
+                console.log("[DEBUG] Usage API response status:", res.status);
                 if (res.ok) {
                     const data = await res.json();
+                    console.log("[DEBUG] Usage data:", data);
                     setUsageInfo(data);
+                } else {
+                    const errorText = await res.text();
+                    console.error("[DEBUG] Usage API error:", errorText);
                 }
             } catch (error) {
                 console.error("Usage fetch error:", error);
@@ -158,12 +164,12 @@ export default function MasterPage() {
                         {/* 残り回数表示 */}
                         {usageInfo && (
                             <div className={`px-2 py-1 rounded-full text-xs ${usageInfo.inTrial
-                                    ? "bg-green-500/20 text-green-300"
-                                    : usageInfo.remainingCount === -1
-                                        ? "bg-purple-500/20 text-purple-300"
-                                        : usageInfo.remainingCount === 0
-                                            ? "bg-red-500/20 text-red-300"
-                                            : "bg-blue-500/20 text-blue-300"
+                                ? "bg-green-500/20 text-green-300"
+                                : usageInfo.remainingCount === -1
+                                    ? "bg-purple-500/20 text-purple-300"
+                                    : usageInfo.remainingCount === 0
+                                        ? "bg-red-500/20 text-red-300"
+                                        : "bg-blue-500/20 text-blue-300"
                                 }`}>
                                 {usageInfo.inTrial ? (
                                     <span>🎁 トライアル残り{usageInfo.trialDaysLeft}日</span>
