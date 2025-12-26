@@ -70,9 +70,9 @@ export async function GET() {
             canUse,
             inTrial,
             isPremium,
-            trialDaysLeft: inTrial && user.trialStartDate
-                ? Math.max(0, TRIAL_DAYS - Math.floor((new Date().getTime() - new Date(user.trialStartDate).getTime()) / (1000 * 60 * 60 * 24)))
-                : 0,
+            trialDaysLeft: !user.trialStartDate
+                ? TRIAL_DAYS // まだ開始していないなら30日
+                : Math.max(0, TRIAL_DAYS - Math.floor((new Date().getTime() - new Date(user.trialStartDate).getTime()) / (1000 * 60 * 60 * 24))),
         });
     } catch (error) {
         console.error("[AI Usage] GET Error:", error);

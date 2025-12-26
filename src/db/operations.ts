@@ -51,6 +51,8 @@ export async function registerUser(email: string, password: string, name?: strin
     const id = email;
     const createdAt = new Date().toISOString();
     const passwordHash = simpleHash(password);
+    const today = new Date();
+    const trialStartDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
     await db.insert(users).values({
         id,
@@ -58,9 +60,10 @@ export async function registerUser(email: string, password: string, name?: strin
         passwordHash,
         name: name || email.split("@")[0],
         createdAt,
+        trialStartDate, // トライアル開始日
     });
 
-    return { id, email, name: name || email.split("@")[0], createdAt, passwordHash };
+    return { id, email, name: name || email.split("@")[0], createdAt, passwordHash, trialStartDate };
 }
 
 // 後方互換性のため残す
