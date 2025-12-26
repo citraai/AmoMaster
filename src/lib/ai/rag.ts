@@ -123,10 +123,10 @@ export async function searchRelevantRecordsAsync(
  * RAGコンテキストを構築（非同期版 - DBから取得）
  */
 export async function buildRagContextAsync(query: string): Promise<string> {
-    const settings = getSettings();
     const relevantRecords = await searchRelevantRecordsAsync(query, 10);
 
-    let context = `パートナー名: ${settings.partnerName}\n`;
+    // パートナー名は直接設定（settingsはDBに移行済み）
+    let context = `パートナー情報:\n`;
     context += `ユーザーが記録したパートナーの情報:\n`;
 
     if (relevantRecords.length === 0) {
