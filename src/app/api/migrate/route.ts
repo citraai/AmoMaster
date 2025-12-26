@@ -1,33 +1,42 @@
-/**
- * DB Migration API - Add password_hash column
- */
-
 import { NextResponse } from "next/server";
-import { db } from "@/db/client";
+import { db } from "@/db";
 import { sql } from "drizzle-orm";
 
+// 一度だけ実行するマイグレーションAPI
+// /api/migrate にアクセスして実行
 export async function GET() {
+    const results: string[] = [];
+
     try {
-        // Add password_hash column to users table
-        await db.run(sql`ALTER TABLE users ADD COLUMN password_hash TEXT`);
-
-        return NextResponse.json({
-            success: true,
-            message: "password_hash column added successfully"
-        });
-    } catch (error: unknown) {
-        const err = error as Error;
-
-        if (err.message?.includes("duplicate column name")) {
-            return NextResponse.json({
-                success: true,
-                message: "password_hash column already exists"
-            });
-        }
-
-        return NextResponse.json({
-            success: false,
-            error: err.message
-        }, { status: 500 });
+        await db.run(sql`ALTER TABLE users ADD COLUMN trial_start_date TEXT`);
+        results.push("✅ trial_start_date 追加完了");
+    } catch (e: unknown) {
+        results.push(`⚠️ trial_start_date: ${e instanceof Error ? e.message : 'error'}`);
     }
+
+    try {
+        await db.run(sql`ALTER TABLE users ADD COLUMN ai_usage_count INTEGER NOT NULL DEFAULT 0`);
+        results.push("✅ ai_usage_count 追加完了");
+    } catch (e: unknown) {
+        results.push(`⚠️ ai_usage_count: ${e instanceof Error ? e.message : 'error'}`);
+    }
+
+    try {
+        await db.run(sql`ALTER TABLE users ADD COLUMN ai_usage_date TEXT`);
+        results.push("✅ ai_usage_date 追加完了");
+    } catch (e: unknown) {
+        results.push(`⚠️ ai_usage_date: ${e instanceof Error ? e.message : 'error'}`);
+    }
+
+    try {
+        await db.run(sql`ALTER TABLE users ADD COLUMN is_premium INTEGER NOT NULL DEFAULT 0`);
+        results.push("✅ is_premium 追加完了");
+    } catch (e: unknown) {
+        results.push(`⚠️ is_premium: ${e instanceof Error ? e.message : 'error'}`);
+    }
+
+    return NextResponse.json({
+        message: "マイグレーション実行結果",
+        results,
+    });
 }
