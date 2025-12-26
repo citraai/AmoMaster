@@ -117,7 +117,7 @@ export default function Home() {
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-sm">HS</span>
+              <span className="text-lg">💕</span>
             </div>
             <div>
               <h1 className="text-white font-bold text-lg tracking-tight">AmoMaster</h1>
