@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db";
+import { db } from "@/db/client";
 import { sql } from "drizzle-orm";
 
 // AI使用量カラム追加マイグレーション
