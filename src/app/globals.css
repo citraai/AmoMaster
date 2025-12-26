@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  /* AmoMaster Dark Theme */
-  --background: #0a0a0f;
-  --foreground: #f5f5f7;
-  --accent-primary: #ff4757;
-  --accent-secondary: #ff6b81;
-  --accent-gold: #ffd32a;
-  --surface: #1a1a24;
-  --surface-hover: #252532;
-  --border: rgba(255, 255, 255, 0.08);
-  --text-secondary: rgba(255, 255, 255, 0.6);
-  --text-muted: rgba(255, 255, 255, 0.4);
+  /* AmoMaster Dark Theme - Improved Visibility */
+  --background: #121218;
+  --foreground: #ffffff;
+  --accent-primary: #ff5a6e;
+  --accent-secondary: #ff8fa0;
+  --accent-gold: #ffd84a;
+  --surface: #1e1e2a;
+  --surface-hover: #2a2a3a;
+  --border: rgba(255, 255, 255, 0.12);
+  --text-secondary: rgba(255, 255, 255, 0.75);
+  --text-muted: rgba(255, 255, 255, 0.55);
 }
 
 @theme inline {
