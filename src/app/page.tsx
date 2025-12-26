@@ -134,32 +134,32 @@ export default function Home() {
       </header>
 
       {/* メインコンテンツ */}
-      <main className="max-w-lg mx-auto px-4 pb-24">
+      <main className="max-w-lg mx-auto px-5 pb-28">
         {/* ウェルカムセクション */}
-        <section className="pt-6 pb-4">
-          <p className="text-white/60 text-sm mb-1">おかえり、野郎ども 👊</p>
-          <h2 className="text-2xl font-bold text-white">
+        <section className="pt-6 pb-5 animate-fadeInUp">
+          <p className="text-white/70 text-sm mb-1">おかえり、野郎ども 👊</p>
+          <h2 className="text-2xl font-bold text-white heading-tight">
             今日も<span className="text-gradient">戦う</span>準備はいいか？
           </h2>
         </section>
 
         {/* 恋愛マスターからの喝 */}
-        <section className="mb-6">
+        <section className="mb-7 animate-fadeInUp-delay-1">
           <MasterAdvice />
         </section>
 
         {/* 統計グリッド */}
-        <section className="mb-6">
-          <h3 className="text-white/60 text-xs font-medium mb-3 flex items-center gap-2">
-            <span>📊</span> お前の戦績
+        <section className="mb-7 animate-fadeInUp-delay-2">
+          <h3 className="text-white/70 text-sm font-medium mb-4 flex items-center gap-2">
+            <span className="text-lg">📊</span> お前の戦績
           </h3>
           <StatsGrid />
         </section>
 
         {/* クイックログボタン */}
-        <section className="mb-6">
-          <h3 className="text-white/60 text-xs font-medium mb-3 flex items-center gap-2">
-            <span>⚡</span> 爆速記録（3タップで完了）
+        <section className="mb-7 animate-fadeInUp-delay-3">
+          <h3 className="text-white/70 text-sm font-medium mb-4 flex items-center gap-2">
+            <span className="text-lg">⚡</span> 爆速記録
           </h3>
           <QuickLogGrid onLogClick={handleQuickLogClick} />
         </section>
@@ -196,10 +196,10 @@ export default function Home() {
         </section>
       </main>
 
-      {/* ボトムナビゲーション */}
-      <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/5">
-        <div className="max-w-lg mx-auto px-4">
-          <div className="flex items-center justify-around py-3">
+      {/* ボトムナビゲーション - 改善版 */}
+      <nav className="fixed bottom-0 left-0 right-0 glass-nav safe-area-bottom">
+        <div className="max-w-lg mx-auto px-2">
+          <div className="flex items-center justify-around py-2">
             <NavItem href="/" icon="🏠" label="ホーム" active />
             <NavItem href="/records" icon="📚" label="記録" />
             <NavItem href="/missions" icon="🎯" label="ミッション" />
@@ -232,16 +232,13 @@ function NavItem({ href, icon, label, active = false }: { href: string; icon: st
   return (
     <Link
       href={href}
-      className={`flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-colors ${active
-        ? "text-white"
-        : "text-white/40 hover:text-white/60"
+      className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-2xl transition-all duration-200 ${active
+        ? "text-white nav-item-active"
+        : "text-white/50 hover:text-white/80 hover:bg-white/5"
         }`}
     >
-      <span className={`text-xl ${active ? "scale-110" : ""} transition-transform`}>{icon}</span>
+      <span className={`text-2xl ${active ? "scale-110" : ""} transition-transform`}>{icon}</span>
       <span className="text-[10px] font-medium">{label}</span>
-      {active && (
-        <div className="absolute bottom-0 w-1 h-1 rounded-full bg-red-500" />
-      )}
     </Link>
   );
 }

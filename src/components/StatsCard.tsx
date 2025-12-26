@@ -4,37 +4,26 @@ import { useEffect, useState } from "react";
 import * as dataService from "@/lib/data-service";
 
 interface StatsCardProps {
-    icon: React.ReactNode;
+    icon: string;
     label: string;
     value: string | number;
     subtext?: string;
-    trend?: "up" | "down" | "neutral";
+    isSpecial?: boolean;
 }
 
-export default function StatsCard({ icon, label, value, subtext, trend }: StatsCardProps) {
-    const getTrendIcon = () => {
-        switch (trend) {
-            case "up":
-                return <span className="text-green-400">↑</span>;
-            case "down":
-                return <span className="text-red-400">↓</span>;
-            default:
-                return null;
-        }
-    };
-
+export default function StatsCard({ icon, label, value, subtext, isSpecial = false }: StatsCardProps) {
     return (
-        <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-            <div className="flex items-center gap-2 mb-2">
-                <span className="text-lg">{icon}</span>
-                <span className="text-white/60 text-xs">{label}</span>
-            </div>
-            <div className="flex items-end gap-2">
-                <span className="text-white text-2xl font-bold">{value}</span>
-                {getTrendIcon()}
-            </div>
+        <div className={`
+            stats-card
+            ${isSpecial ? "stats-card-special" : ""}
+            flex flex-col items-center justify-center text-center
+            min-h-[100px]
+        `}>
+            <span className="text-2xl mb-2">{icon}</span>
+            <span className="stat-number text-white mb-1">{value}</span>
+            <span className="stat-label">{label}</span>
             {subtext && (
-                <span className="text-white/40 text-xs">{subtext}</span>
+                <span className="text-[10px] text-white/40 mt-1">{subtext}</span>
             )}
         </div>
     );
@@ -81,28 +70,36 @@ export function StatsGrid() {
 
     if (isLoading) {
         return (
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-4">
                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10 animate-pulse">
-                        <div className="h-4 bg-white/10 rounded mb-2"></div>
-                        <div className="h-6 bg-white/10 rounded"></div>
+                    <div key={i} className="stats-card animate-pulse min-h-[100px]">
+                        <div className="h-6 bg-white/10 rounded-lg mb-2 w-8 mx-auto"></div>
+                        <div className="h-8 bg-white/10 rounded-lg w-12 mx-auto"></div>
                     </div>
                 ))}
             </div>
         );
     }
 
-    const stats = [
-        { icon: "📝", label: "記録数", value: monthlyCount, subtext: "今月" },
-        { icon: "🔥", label: "連続日数", value: consecutiveDays, subtext: "日" },
-        { icon: "💕", label: "パートナー理解度", value: monthlyCount >= 5 ? "良好" : "---", subtext: monthlyCount >= 5 ? "理解が深まっている" : "記録して解放" },
-    ];
-
     return (
-        <div className="grid grid-cols-3 gap-3">
-            {stats.map((stat, i) => (
-                <StatsCard key={i} {...stat} />
-            ))}
+        <div className="grid grid-cols-3 gap-4">
+            <StatsCard
+                icon="📝"
+                label="今月の記録"
+                value={monthlyCount}
+            />
+            <StatsCard
+                icon="🔥"
+                label="連続日数"
+                value={consecutiveDays}
+                subtext="日"
+            />
+            <StatsCard
+                icon="💕"
+                label="理解度"
+                value={monthlyCount >= 5 ? "良好" : "---"}
+                isSpecial={monthlyCount >= 5}
+            />
         </div>
     );
 }
