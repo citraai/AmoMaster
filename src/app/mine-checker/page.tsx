@@ -201,28 +201,28 @@ export default function MineCheckerPage() {
             {/* Bottom Navigation */}
             <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/5">
                 <div className="max-w-2xl mx-auto px-4 py-3 flex justify-around">
-                    <Link href="/" className="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
-                        <span className="text-xl">🏠</span>
+                    <Link href="/" className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-colors">
+                        <img src="/nav-home.png" alt="ホーム" className="w-8 h-8 rounded-full object-cover" />
                         <span className="text-xs">ホーム</span>
                     </Link>
-                    <Link href="/records" className="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
-                        <span className="text-xl">📚</span>
+                    <Link href="/records" className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-colors">
+                        <img src="/nav-records.png" alt="記録" className="w-8 h-8 rounded-full object-cover" />
                         <span className="text-xs">記録</span>
                     </Link>
-                    <Link href="/missions" className="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
-                        <span className="text-xl">🎯</span>
+                    <Link href="/missions" className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-colors">
+                        <img src="/nav-missions.png" alt="ミッション" className="w-8 h-8 rounded-full object-cover" />
                         <span className="text-xs">ミッション</span>
                     </Link>
-                    <Link href="/mine-checker" className="flex flex-col items-center gap-1 text-red-400">
-                        <span className="text-xl">💣</span>
+                    <Link href="/mine-checker" className="flex flex-col items-center gap-1 nav-item-active">
+                        <img src="/nav-danger.png" alt="地雷" className="w-8 h-8 rounded-full object-cover scale-110" />
                         <span className="text-xs">地雷</span>
                     </Link>
-                    <Link href="/master" className="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
-                        <span className="text-xl">🧠</span>
+                    <Link href="/master" className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-colors">
+                        <img src="/nav-master.png" alt="マスター" className="w-8 h-8 rounded-full object-cover" />
                         <span className="text-xs">マスター</span>
                     </Link>
-                    <Link href="/settings" className="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
-                        <span className="text-xl">⚙️</span>
+                    <Link href="/settings" className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-colors">
+                        <img src="/nav-settings.png" alt="設定" className="w-8 h-8 rounded-full object-cover" />
                         <span className="text-xs">設定</span>
                     </Link>
                 </div>

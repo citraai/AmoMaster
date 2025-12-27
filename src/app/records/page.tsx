@@ -201,8 +201,8 @@ export default function RecordsPage() {
                                     if (option.key !== "custom") setCustomDate("");
                                 }}
                                 className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${dateFilter === option.key
-                                        ? "bg-purple-500/30 text-purple-300 border border-purple-500/50"
-                                        : "bg-white/5 text-white/50 hover:bg-white/10"
+                                    ? "bg-purple-500/30 text-purple-300 border border-purple-500/50"
+                                    : "bg-white/5 text-white/50 hover:bg-white/10"
                                     }`}
                             >
                                 {option.label}
@@ -317,12 +317,12 @@ export default function RecordsPage() {
             <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/5">
                 <div className="max-w-lg mx-auto px-4">
                     <div className="flex items-center justify-around py-3">
-                        <NavItem href="/" icon="🏠" label="ホーム" />
-                        <NavItem href="/records" icon="📚" label="記録" active />
-                        <NavItem href="/missions" icon="🎯" label="ミッション" />
-                        <NavItem href="/mine-checker" icon="💣" label="地雷" />
-                        <NavItem href="/master" icon="🧠" label="マスター" />
-                        <NavItem href="/settings" icon="⚙️" label="設定" />
+                        <NavItem href="/" icon="/nav-home.png" label="ホーム" />
+                        <NavItem href="/records" icon="/nav-records.png" label="記録" active />
+                        <NavItem href="/missions" icon="/nav-missions.png" label="ミッション" />
+                        <NavItem href="/mine-checker" icon="/nav-danger.png" label="地雷" />
+                        <NavItem href="/master" icon="/nav-master.png" label="マスター" />
+                        <NavItem href="/settings" icon="/nav-settings.png" label="設定" />
                     </div>
                 </div>
             </nav>
@@ -351,13 +351,18 @@ function NavItem({
     label: string;
     active?: boolean;
 }) {
+    const isImage = icon.startsWith('/');
     return (
         <Link
             href={href}
-            className={`flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-colors ${active ? "text-white" : "text-white/40 hover:text-white/60"
+            className={`flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-colors ${active ? "nav-item-active" : "opacity-60 hover:opacity-100"
                 }`}
         >
-            <span className={`text-xl ${active ? "scale-110" : ""} transition-transform`}>{icon}</span>
+            {isImage ? (
+                <img src={icon} alt={label} className={`w-8 h-8 rounded-full object-cover ${active ? "scale-110" : ""} transition-transform`} />
+            ) : (
+                <span className={`text-xl ${active ? "scale-110" : ""} transition-transform`}>{icon}</span>
+            )}
             <span className="text-[10px] font-medium">{label}</span>
             {active && <div className="absolute bottom-0 w-1 h-1 rounded-full bg-red-500" />}
         </Link>
