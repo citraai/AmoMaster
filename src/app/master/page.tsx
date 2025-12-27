@@ -59,11 +59,14 @@ export default function MasterPage() {
                 console.error("Usage fetch error:", error);
             }
 
+            // 初回メッセージではニックネームがあればそれを使う
+            const displayName = nickname || label;
+
             setMessages([
                 {
                     id: "welcome",
                     role: "master",
-                    content: `よう、来たな。${label}のことで悩みでもあるのか？何でも聞いてやる。ただし、甘ったれた質問には容赦なく喝を入れるからな 👊`,
+                    content: `よう、来たな。${displayName}のことで悩みでもあるのか？何でも聞いてやる。ただし、甘ったれた質問には容赦なく喝を入れるからな 👊`,
                     timestamp: new Date(),
                 },
             ]);
