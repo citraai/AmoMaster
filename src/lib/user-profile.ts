@@ -115,16 +115,21 @@ export async function getPartnerLabelFromDB(): Promise<string> {
 }
 
 // DB版: パートナーの呼び方を取得（非同期）
-// ※DBのpartner_nameフィールドから取得
+// ※settingsテーブルから取得
 export async function getPartnerNicknameFromDB(): Promise<string | undefined> {
     try {
-        const response = await fetch("/api/user/profile");
+        const response = await fetch("/api/data?type=settings");
         if (!response.ok) {
             return undefined;
         }
-        const profile = await response.json();
-        // partner_name フィールドを使用（「あこちゃん」など）
-        return profile.partnerName || undefined;
+        const settings = await response.json();
+        // settingsテーブルのpartnerNameを使用
+        const name = settings.partnerName;
+        // デフォルト値「パートナー」以外を返す
+        if (name && name !== "パートナー") {
+            return name;
+        }
+        return undefined;
     } catch (error) {
         console.error("[Profile] Error fetching partner name:", error);
         return undefined;
