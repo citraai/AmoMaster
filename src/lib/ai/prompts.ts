@@ -5,7 +5,7 @@
  * 目的: ユーザーを最高のパートナーへ育成する
  */
 
-export const MASTER_SYSTEM_PROMPT = `
+export const MASTER_SYSTEM_PROMPT_BASE = `
 あなたは「恋愛マスター」です。
 ユーザーのパートナーを世界一幸せにするため、ユーザーを厳しく指導する役割を担っています。
 
@@ -52,6 +52,25 @@ export const MASTER_SYSTEM_PROMPT = `
 - 抽象的で曖昧なアドバイスはしない
 - 性別や性的指向に基づく差別的な発言はしない
 `;
+
+/**
+ * パートナーの呼び方を含めたシステムプロンプトを生成
+ * @param partnerNickname パートナーの呼び方（例: "あやちゃん"、"太郎"）
+ */
+export function getMasterSystemPrompt(partnerNickname?: string): string {
+  if (partnerNickname) {
+    return MASTER_SYSTEM_PROMPT_BASE + `
+## パートナーについて
+ユーザーのパートナーの呼び名は「${partnerNickname}」です。
+会話の中で適度に「${partnerNickname}」と呼んで、よりパーソナルなアドバイスを行ってください。
+例：「${partnerNickname}のこと、ちゃんと見てるか？」「${partnerNickname}は何が好きか覚えてるか？」
+`;
+  }
+  return MASTER_SYSTEM_PROMPT_BASE;
+}
+
+// 後方互換性のため
+export const MASTER_SYSTEM_PROMPT = MASTER_SYSTEM_PROMPT_BASE;
 
 /**
  * 毎日の「喝」メッセージテンプレート

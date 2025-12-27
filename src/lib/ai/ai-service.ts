@@ -8,7 +8,7 @@
 import { isNanoAvailable, generateWithNano } from "./gemini-nano";
 import { isApiAvailable, generateWithApi } from "./openai-api";
 import { buildRagContextAsync } from "./rag";
-import { MASTER_SYSTEM_PROMPT } from "./prompts";
+import { getMasterSystemPrompt } from "./prompts";
 
 export type AIProvider = "nano" | "api" | "mock";
 
@@ -57,12 +57,15 @@ function generateMockResponse(query: string): string {
 /**
  * AIにメッセージを送信して応答を取得
  */
-export async function sendMessage(userMessage: string): Promise<AIResponse> {
+export async function sendMessage(userMessage: string, partnerNickname?: string): Promise<AIResponse> {
     const provider = await detectProvider();
 
     // RAGコンテキストを構築（DBから非同期で取得）
     const ragContext = await buildRagContextAsync(userMessage);
     console.log("[DEBUG] RAG Context:", ragContext);
+
+    // パートナーの呼び方を含めたシステムプロンプトを生成
+    const systemPrompt = getMasterSystemPrompt(partnerNickname);
 
     // プロンプトを構築
     const fullPrompt = `${ragContext}\n\n---\nユーザーの質問: ${userMessage}`;
@@ -70,9 +73,9 @@ export async function sendMessage(userMessage: string): Promise<AIResponse> {
     let text: string | null = null;
 
     if (provider === "nano") {
-        text = await generateWithNano(fullPrompt, MASTER_SYSTEM_PROMPT);
+        text = await generateWithNano(fullPrompt, systemPrompt);
     } else if (provider === "api") {
-        text = await generateWithApi(fullPrompt, MASTER_SYSTEM_PROMPT);
+        text = await generateWithApi(fullPrompt, systemPrompt);
     }
 
     // AIが失敗した場合はモックにフォールバック

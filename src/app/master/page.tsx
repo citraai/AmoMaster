@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { sendMessage, detectProvider, getProviderLabel, AIProvider } from "@/lib/ai/ai-service";
-import { getPartnerLabelFromDB } from "@/lib/user-profile";
+import { getPartnerLabelFromDB, getPartnerNicknameFromDB } from "@/lib/user-profile";
 
 interface Message {
     id: string;
@@ -18,6 +18,7 @@ export default function MasterPage() {
     const [inputValue, setInputValue] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     const [partnerName, setPartnerName] = useState("パートナー");
+    const [partnerNickname, setPartnerNickname] = useState<string | undefined>(undefined);
     const [currentProvider, setCurrentProvider] = useState<AIProvider>("mock");
     const [usageInfo, setUsageInfo] = useState<{
         remainingCount: number;
@@ -32,6 +33,10 @@ export default function MasterPage() {
             // DBからパートナー呼称を取得
             const label = await getPartnerLabelFromDB();
             setPartnerName(label);
+
+            // DBからパートナーのニックネームを取得
+            const nickname = await getPartnerNicknameFromDB();
+            setPartnerNickname(nickname);
 
             // AIプロバイダーを検出
             const provider = await detectProvider();
@@ -105,8 +110,8 @@ export default function MasterPage() {
                 setUsageInfo(prev => prev ? { ...prev, remainingCount: usageData.remainingCount, canUse: usageData.remainingCount !== 0 } : null);
             }
 
-            // AIサービスを呼び出し
-            const response = await sendMessage(userMessage.content);
+            // AIサービスを呼び出し（パートナーのニックネームを渡す）
+            const response = await sendMessage(userMessage.content, partnerNickname);
 
             const masterMessage: Message = {
                 id: (Date.now() + 1).toString(),
