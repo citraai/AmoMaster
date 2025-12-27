@@ -116,9 +116,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 glass border-b border-white/5">
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center shadow-lg">
-              <span className="text-lg">💕</span>
-            </div>
+            <img src="/app-icon.png" alt="AmoMaster" className="w-10 h-10 rounded-xl shadow-lg" />
             <div>
               <h1 className="text-white font-bold text-lg tracking-tight">AmoMaster</h1>
               <p className="text-white/40 text-[10px]">パートナーを世界一幸せに</p>
@@ -200,12 +198,12 @@ export default function Home() {
       <nav className="fixed bottom-0 left-0 right-0 glass-nav safe-area-bottom">
         <div className="max-w-lg mx-auto px-2">
           <div className="flex items-center justify-around py-2">
-            <NavItem href="/" icon="🏠" label="ホーム" active />
-            <NavItem href="/records" icon="📚" label="記録" />
-            <NavItem href="/missions" icon="🎯" label="ミッション" />
-            <NavItem href="/mine-checker" icon="💣" label="地雷" />
-            <NavItem href="/master" icon="🧠" label="マスター" />
-            <NavItem href="/settings" icon="⚙️" label="設定" />
+            <NavItem href="/" icon="/nav-home.png" label="ホーム" active />
+            <NavItem href="/records" icon="/nav-records.png" label="記録" />
+            <NavItem href="/missions" icon="/nav-missions.png" label="ミッション" />
+            <NavItem href="/mine-checker" icon="/nav-danger.png" label="地雷" />
+            <NavItem href="/master" icon="/nav-master.png" label="マスター" />
+            <NavItem href="/settings" icon="/nav-settings.png" label="設定" />
           </div>
         </div>
       </nav>
@@ -229,15 +227,20 @@ export default function Home() {
 }
 
 function NavItem({ href, icon, label, active = false }: { href: string; icon: string; label: string; active?: boolean }) {
+  const isImage = icon.startsWith('/');
   return (
     <Link
       href={href}
       className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-2xl transition-all duration-200 ${active
-        ? "text-white nav-item-active"
-        : "text-white/50 hover:text-white/80 hover:bg-white/5"
+        ? "nav-item-active"
+        : "opacity-60 hover:opacity-100 hover:bg-white/5"
         }`}
     >
-      <span className={`text-2xl ${active ? "scale-110" : ""} transition-transform`}>{icon}</span>
+      {isImage ? (
+        <img src={icon} alt={label} className={`w-8 h-8 rounded-full object-cover ${active ? "scale-110" : ""} transition-transform`} />
+      ) : (
+        <span className={`text-2xl ${active ? "scale-110" : ""} transition-transform`}>{icon}</span>
+      )}
       <span className="text-[10px] font-medium">{label}</span>
     </Link>
   );

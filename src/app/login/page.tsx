@@ -54,7 +54,7 @@ export default function LoginPage() {
             <div className="w-full max-w-md">
                 {/* ロゴ/タイトル */}
                 <div className="text-center mb-8">
-                    <div className="text-5xl mb-4">💕</div>
+                    <img src="/app-icon.png" alt="AmoMaster" className="w-16 h-16 mx-auto mb-4 rounded-2xl shadow-lg" />
                     <h1 className="text-white text-2xl font-bold mb-2">AmoMaster</h1>
                     <p className="text-white/60 text-sm">パートナーを理解する、最高の味方</p>
                 </div>
