@@ -31,6 +31,7 @@ export async function GET() {
             partnerPronoun: profile.partnerPronoun || "partner",
             gender: profile.gender,
             name: profile.name,
+            partnerName: profile.partnerName,  // パートナーの呼び方
         };
         console.log("[Profile API] Returning:", response);
 
