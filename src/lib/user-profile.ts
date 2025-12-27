@@ -114,7 +114,8 @@ export async function getPartnerLabelFromDB(): Promise<string> {
     }
 }
 
-// DB版: パートナーのニックネーム（呼び方）を取得（非同期）
+// DB版: パートナーの呼び方を取得（非同期）
+// ※DBのpartner_nameフィールドから取得
 export async function getPartnerNicknameFromDB(): Promise<string | undefined> {
     try {
         const response = await fetch("/api/user/profile");
@@ -122,9 +123,10 @@ export async function getPartnerNicknameFromDB(): Promise<string | undefined> {
             return undefined;
         }
         const profile = await response.json();
-        return profile.partnerNickname || undefined;
+        // partner_name フィールドを使用（「あこちゃん」など）
+        return profile.partnerName || undefined;
     } catch (error) {
-        console.error("[Profile] Error fetching partner nickname:", error);
+        console.error("[Profile] Error fetching partner name:", error);
         return undefined;
     }
 }
