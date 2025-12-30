@@ -261,21 +261,21 @@ export default function MasterPage() {
 
             {/* 入力エリア */}
             <div className="fixed bottom-0 left-0 right-0 glass border-t border-white/5" style={{ paddingBottom: 'env(safe-area-inset-bottom, 16px)' }}>
-                <div className="max-w-lg mx-auto px-4 py-4 pb-6">
-                    <div className="flex gap-3">
+                <div className="w-full px-4 py-4 pb-6">
+                    <div className="flex gap-2 items-center">
                         <input
                             type="text"
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             onKeyPress={(e) => e.key === "Enter" && handleSend()}
                             placeholder={`${partnerName}のことで相談...`}
-                            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-red-500/50"
+                            className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-red-500/50"
                             disabled={isTyping}
                         />
                         <button
                             onClick={handleSend}
                             disabled={!inputValue.trim() || isTyping}
-                            className="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity min-w-[56px]"
+                            className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity flex items-center justify-center"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
