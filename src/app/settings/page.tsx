@@ -194,6 +194,32 @@ export default function SettingsPage() {
                             <span className="text-white">Turso DB</span>
                         </div>
                     </div>
+
+                    {/* 利用規約・プライバシーポリシーリンク */}
+                    <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
+                        <Link
+                            href="/terms"
+                            className="flex justify-between items-center py-2 text-white/70 hover:text-white transition-colors"
+                        >
+                            <span className="flex items-center gap-2">
+                                <span>📜</span> 利用規約
+                            </span>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
+                        <Link
+                            href="/privacy"
+                            className="flex justify-between items-center py-2 text-white/70 hover:text-white transition-colors"
+                        >
+                            <span className="flex items-center gap-2">
+                                <span>🔒</span> プライバシーポリシー
+                            </span>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
+                    </div>
                 </section>
 
                 {/* 危険ゾーン - アカウント削除 */}
