@@ -82,9 +82,9 @@ export default function PrivacyPage() {
                         <h2 className="text-white font-semibold text-lg mb-3">5. 外部サービスの利用</h2>
                         <p>本アプリでは、以下の外部サービスを利用しています。</p>
 
-                        <h3 className="text-white font-medium mt-4 mb-2">5.1 Google Gemini API</h3>
+                        <h3 className="text-white font-medium mt-4 mb-2">5.1 OpenAI API</h3>
                         <p className="text-white/70">
-                            AIアドバイザー機能のために利用しています。ユーザーの記録情報がAI処理のために送信されますが、Googleによる情報の保存期間はGoogleのプライバシーポリシーに従います。
+                            AIアドバイザー機能（GPT-4o-mini）のために利用しています。ユーザーの記録情報がAI処理のために送信されますが、OpenAI社による情報の保存期間はOpenAI社のプライバシーポリシーに従います。
                         </p>
 
                         <h3 className="text-white font-medium mt-4 mb-2">5.2 Turso Database</h3>

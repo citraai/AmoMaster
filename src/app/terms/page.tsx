@@ -77,7 +77,7 @@ export default function TermsPage() {
                     <section>
                         <h2 className="text-white font-semibold text-lg mb-3">第5条（AIサービスについて）</h2>
                         <ol className="list-decimal list-inside space-y-2 text-white/70">
-                            <li>本アプリのAI機能は、Google Gemini APIを利用しています。</li>
+                            <li>本アプリのAI機能は、OpenAI社のGPT-4o-miniを利用しています。</li>
                             <li>AIによる回答は参考情報であり、正確性や完全性を保証するものではありません。</li>
                             <li>AIによるアドバイスに基づく行動の結果について、運営者は責任を負いません。</li>
                         </ol>
