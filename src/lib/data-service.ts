@@ -168,3 +168,27 @@ export async function updateUserProfile(data: {
 export async function getAllData() {
     return fetchApi("/api/data?type=all");
 }
+
+// ==================== Account Deletion ====================
+
+export async function deleteAccount(): Promise<{ success: boolean; message?: string; error?: string }> {
+    try {
+        const response = await fetch("/api/account/delete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return { success: false, error: data.error || "削除に失敗しました" };
+        }
+
+        return { success: true, message: data.message };
+    } catch (error) {
+        console.error("[deleteAccount] Error:", error);
+        return { success: false, error: "ネットワークエラーが発生しました" };
+    }
+}

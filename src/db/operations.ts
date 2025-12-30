@@ -349,3 +349,44 @@ export async function updateUserProgress(userId: string, data: {
             .where(eq(userProgress.userId, userId));
     }
 }
+
+// ==================== Account Deletion ====================
+
+/**
+ * アカウント削除 - App Store ガイドライン 5.1.1 準拠
+ * ユーザーとその全関連データを完全に削除
+ */
+export async function deleteUserAccount(userId: string): Promise<{ success: boolean; deletedTables: string[] }> {
+    const deletedTables: string[] = [];
+
+    try {
+        // 1. Preferences削除
+        await db.delete(preferences).where(eq(preferences.userId, userId));
+        deletedTables.push("preferences");
+
+        // 2. Quotes削除
+        await db.delete(quotes).where(eq(quotes.userId, userId));
+        deletedTables.push("quotes");
+
+        // 3. Events削除
+        await db.delete(events).where(eq(events.userId, userId));
+        deletedTables.push("events");
+
+        // 4. Settings削除
+        await db.delete(settings).where(eq(settings.userId, userId));
+        deletedTables.push("settings");
+
+        // 5. User Progress削除
+        await db.delete(userProgress).where(eq(userProgress.userId, userId));
+        deletedTables.push("userProgress");
+
+        // 6. User本体を削除（最後に実行）
+        await db.delete(users).where(eq(users.id, userId));
+        deletedTables.push("users");
+
+        return { success: true, deletedTables };
+    } catch (error) {
+        console.error("[deleteUserAccount] Error:", error);
+        return { success: false, deletedTables };
+    }
+}

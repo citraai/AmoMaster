@@ -14,6 +14,12 @@ export default function SettingsPage() {
     const [saveMessage, setSaveMessage] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
+    // アカウント削除関連のstate
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteConfirmText, setDeleteConfirmText] = useState("");
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState("");
+
     // 認証チェック
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -53,6 +59,33 @@ export default function SettingsPage() {
     const handleLogout = async () => {
         if (confirm("ログアウトしますか？")) {
             await signOut({ callbackUrl: "/login" });
+        }
+    };
+
+    // アカウント削除処理
+    const handleDeleteAccount = async () => {
+        if (deleteConfirmText !== "削除する") {
+            setDeleteError("「削除する」と入力してください");
+            return;
+        }
+
+        setIsDeleting(true);
+        setDeleteError("");
+
+        try {
+            const result = await dataService.deleteAccount();
+
+            if (result.success) {
+                // ログアウトしてログイン画面へ
+                await signOut({ callbackUrl: "/login" });
+            } else {
+                setDeleteError(result.error || "削除に失敗しました");
+            }
+        } catch (error) {
+            console.error("アカウント削除エラー:", error);
+            setDeleteError("エラーが発生しました");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -162,7 +195,84 @@ export default function SettingsPage() {
                         </div>
                     </div>
                 </section>
+
+                {/* 危険ゾーン - アカウント削除 */}
+                <section className="glass rounded-2xl p-4 border border-red-500/30 bg-red-500/5">
+                    <h2 className="text-red-400 font-semibold mb-4 flex items-center gap-2">
+                        <span>⚠️</span> 危険ゾーン
+                    </h2>
+                    <p className="text-white/60 text-sm mb-4">
+                        アカウントを削除すると、すべてのデータが完全に削除され、復元できません。
+                    </p>
+                    <button
+                        onClick={() => setShowDeleteModal(true)}
+                        className="w-full py-3 bg-red-600/20 border border-red-500/50 text-red-400 rounded-xl hover:bg-red-600/30 transition-colors flex items-center justify-center gap-2 font-semibold"
+                    >
+                        🗑️ アカウントを削除（退会）
+                    </button>
+                </section>
             </main>
+
+            {/* アカウント削除確認モーダル */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80">
+                    <div className="glass rounded-2xl p-6 max-w-sm w-full border border-red-500/30">
+                        <h3 className="text-red-400 font-bold text-lg mb-4 flex items-center gap-2">
+                            <span>⚠️</span> アカウント削除
+                        </h3>
+                        <div className="space-y-4">
+                            <p className="text-white/80 text-sm">
+                                本当にアカウントを削除しますか？この操作は<span className="text-red-400 font-bold">取り消せません</span>。
+                            </p>
+                            <p className="text-white/60 text-xs">
+                                以下のデータがすべて削除されます：
+                            </p>
+                            <ul className="text-white/60 text-xs list-disc list-inside space-y-1">
+                                <li>パートナーの好み・NGリスト</li>
+                                <li>記録した発言集</li>
+                                <li>イベント・記念日</li>
+                                <li>ミッション進捗</li>
+                                <li>設定情報</li>
+                            </ul>
+                            <div>
+                                <label className="block text-white/60 text-xs mb-2">
+                                    確認のため「削除する」と入力してください
+                                </label>
+                                <input
+                                    type="text"
+                                    value={deleteConfirmText}
+                                    onChange={(e) => setDeleteConfirmText(e.target.value)}
+                                    className="w-full bg-white/5 border border-red-500/30 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-red-500"
+                                    placeholder="削除する"
+                                />
+                            </div>
+                            {deleteError && (
+                                <p className="text-red-400 text-sm">{deleteError}</p>
+                            )}
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => {
+                                        setShowDeleteModal(false);
+                                        setDeleteConfirmText("");
+                                        setDeleteError("");
+                                    }}
+                                    className="flex-1 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-colors"
+                                    disabled={isDeleting}
+                                >
+                                    キャンセル
+                                </button>
+                                <button
+                                    onClick={handleDeleteAccount}
+                                    disabled={isDeleting || deleteConfirmText !== "削除する"}
+                                    className="flex-1 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isDeleting ? "削除中..." : "削除する"}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* ボトムナビゲーション */}
             <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/5">
@@ -200,3 +310,4 @@ function NavItem({ href, icon, label, active = false }: { href: string; icon: st
         </Link>
     );
 }
+
