@@ -80,6 +80,8 @@ export default function TermsPage() {
                         <h2 className="text-white font-semibold text-lg mb-3">第5条（AIサービスについて）</h2>
                         <ol className="list-decimal list-inside space-y-2 text-white/70">
                             <li>本アプリのAI機能は、OpenAI社のGPT-4o-miniを利用しています。</li>
+                            <li>AI機能を利用する際、ユーザーが記録したパートナーに関する情報がOpenAI社のサーバーに送信されます。</li>
+                            <li>ユーザーは、AI機能を利用するにあたり、パートナーに関する情報を外部サービスに送信することについて、パートナー本人から了承を得ているものとみなします。</li>
                             <li>AIによる回答は参考情報であり、正確性や完全性を保証するものではありません。</li>
                             <li>AIによるアドバイスに基づく行動の結果について、運営者は責任を負いません。</li>
                         </ol>
