@@ -3,17 +3,25 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import * as dataService from "@/lib/data-service";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!agreedToTerms) {
+            setError("利用規約とプライバシーポリシーに同意してください");
+            return;
+        }
+
         setIsLoading(true);
         setError("");
 
@@ -93,10 +101,27 @@ export default function LoginPage() {
                         />
                     </div>
 
+                    {/* 利用規約・プライバシーポリシー同意 */}
+                    <div className="flex items-start gap-3">
+                        <input
+                            type="checkbox"
+                            id="agree-terms"
+                            checked={agreedToTerms}
+                            onChange={(e) => setAgreedToTerms(e.target.checked)}
+                            className="mt-1 w-4 h-4 rounded border-white/30 bg-white/5 text-pink-500 focus:ring-pink-500 focus:ring-offset-0"
+                        />
+                        <label htmlFor="agree-terms" className="text-white/60 text-xs leading-relaxed">
+                            <Link href="/terms" className="text-pink-400 underline hover:text-pink-300">利用規約</Link>
+                            と
+                            <Link href="/privacy" className="text-pink-400 underline hover:text-pink-300">プライバシーポリシー</Link>
+                            に同意します
+                        </label>
+                    </div>
+
                     <button
                         type="submit"
-                        disabled={isLoading}
-                        className="w-full bg-gradient-to-r from-pink-600 to-red-600 text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+                        disabled={isLoading || !agreedToTerms}
+                        className="w-full bg-gradient-to-r from-pink-600 to-red-600 text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isLoading ? "読み込み中..." : "ログイン / 登録"}
                     </button>
@@ -126,3 +151,4 @@ export default function LoginPage() {
         </div>
     );
 }
+
