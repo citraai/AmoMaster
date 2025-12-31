@@ -1,5 +1,5 @@
-import { createClient, Client } from "@libsql/client";
-import { drizzle, LibSQLDatabase } from "drizzle-orm/libsql";
+import { createClient, type Client } from "@libsql/client/web";
+import { drizzle, type LibSQLDatabase } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 
 // 遅延初期化用の変数
@@ -32,7 +32,7 @@ function getDb(): LibSQLDatabase<typeof schema> {
 // 後方互換性のためのプロキシ
 export const db = new Proxy({} as LibSQLDatabase<typeof schema>, {
     get(_target, prop) {
-        return (getDb() as any)[prop];
+        return (getDb() as unknown as Record<string, unknown>)[prop];
     },
 });
 
