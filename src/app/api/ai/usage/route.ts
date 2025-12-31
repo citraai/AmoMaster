@@ -4,8 +4,6 @@ import { db } from "@/db/client";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export const runtime = "edge";
-
 const DAILY_LIMIT = 3; // 1日のAI使用制限
 const TRIAL_DAYS = 30; // トライアル期間（日）
 

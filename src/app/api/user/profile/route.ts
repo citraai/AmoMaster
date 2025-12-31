@@ -6,8 +6,6 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import * as dbOps from "@/db/operations";
 
-export const runtime = "edge";
-
 export async function GET() {
     try {
         const session = await auth();

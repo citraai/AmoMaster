@@ -7,8 +7,6 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { deleteUserAccount } from "@/db/operations";
 
-export const runtime = "edge";
-
 export async function POST() {
     try {
         // 認証チェック
