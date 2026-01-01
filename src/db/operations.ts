@@ -403,7 +403,7 @@ export async function createFeedback(userId: string, data: {
     content: string;
 }) {
     const db = await getDb();
-    const id = \b_\_\\;
+    const id = `fb_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const createdAt = new Date().toISOString();
 
     await db.insert(feedback).values({
