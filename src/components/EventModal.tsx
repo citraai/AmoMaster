@@ -55,18 +55,18 @@ export default function EventModal({ isOpen, onClose, onSaved }: EventModalProps
             {/* Backdrop */}
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-            {/* Modal */}
-            <div className="relative w-full max-w-lg bg-zinc-900 rounded-t-3xl sm:rounded-2xl border border-white/10 max-h-[85vh] overflow-hidden animate-slide-up">
+            {/* Modal - 明るいクリームカラーの背景 */}
+            <div className="relative w-full max-w-lg bg-[#FDF6E9] rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[85vh] overflow-hidden animate-slide-up">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-white/5">
-                    <h2 className="text-white font-semibold flex items-center gap-2">
+                <div className="flex items-center justify-between p-4 border-b border-amber-200/50">
+                    <h2 className="text-gray-800 font-semibold flex items-center gap-2">
                         <span>📅</span> イベントを追加
                     </h2>
                     <button
                         onClick={onClose}
-                        className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                        className="p-2 rounded-full hover:bg-amber-100 transition-colors"
                     >
-                        <svg className="w-5 h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
@@ -76,19 +76,19 @@ export default function EventModal({ isOpen, onClose, onSaved }: EventModalProps
                 <div className="p-4 space-y-4 overflow-y-auto max-h-[60vh]">
                     {/* イベントタイプ */}
                     <div>
-                        <label className="block text-white/60 text-xs mb-2">タイプ</label>
+                        <label className="block text-gray-600 text-xs font-medium mb-2">タイプ</label>
                         <div className="grid grid-cols-4 gap-2">
                             {EVENT_TYPES.map((t) => (
                                 <button
                                     key={t}
                                     onClick={() => setType(t)}
-                                    className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition-all ${type === t
-                                        ? "border-red-500 bg-red-500/10"
-                                        : "border-white/10 bg-white/5 hover:bg-white/10"
+                                    className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition-all ${type === t
+                                        ? "border-red-400 bg-red-50"
+                                        : "border-amber-200 bg-white hover:bg-amber-50"
                                         }`}
                                 >
                                     <span className="text-xl">{EVENT_TYPE_ICONS[t]}</span>
-                                    <span className="text-xs text-white/60">{EVENT_TYPE_LABELS[t]}</span>
+                                    <span className="text-xs text-gray-700 font-medium">{EVENT_TYPE_LABELS[t]}</span>
                                 </button>
                             ))}
                         </div>
@@ -96,40 +96,40 @@ export default function EventModal({ isOpen, onClose, onSaved }: EventModalProps
 
                     {/* タイトル */}
                     <div>
-                        <label className="block text-white/60 text-xs mb-2">タイトル</label>
+                        <label className="block text-gray-600 text-xs font-medium mb-2">タイトル</label>
                         <input
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-red-500/50"
+                            className="w-full bg-white border-2 border-amber-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400"
                             placeholder="例: 〇〇の誕生日"
                         />
                     </div>
 
                     {/* 日付 */}
                     <div>
-                        <label className="block text-white/60 text-xs mb-2">日付</label>
+                        <label className="block text-gray-600 text-xs font-medium mb-2">日付</label>
                         <input
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500/50"
+                            className="w-full bg-white border-2 border-amber-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:border-red-400"
                         />
                     </div>
 
                     {/* 毎年繰り返す */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-white text-sm">毎年リマインド</p>
-                            <p className="text-white/40 text-xs">誕生日や記念日に最適</p>
+                            <p className="text-gray-800 text-sm font-medium">毎年リマインド</p>
+                            <p className="text-gray-500 text-xs">誕生日や記念日に最適</p>
                         </div>
                         <button
                             onClick={() => setIsRecurring(!isRecurring)}
-                            className={`w-12 h-7 rounded-full transition-colors relative ${isRecurring ? "bg-red-500" : "bg-white/20"
+                            className={`w-12 h-7 rounded-full transition-colors relative ${isRecurring ? "bg-red-400" : "bg-gray-300"
                                 }`}
                         >
                             <div
-                                className={`w-5 h-5 rounded-full bg-white absolute top-1 transition-transform ${isRecurring ? "translate-x-6" : "translate-x-1"
+                                className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-1 transition-transform ${isRecurring ? "translate-x-6" : "translate-x-1"
                                     }`}
                             />
                         </button>
@@ -137,11 +137,11 @@ export default function EventModal({ isOpen, onClose, onSaved }: EventModalProps
 
                     {/* メモ */}
                     <div>
-                        <label className="block text-white/60 text-xs mb-2">メモ（任意）</label>
+                        <label className="block text-gray-600 text-xs font-medium mb-2">メモ（任意）</label>
                         <textarea
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-red-500/50 resize-none"
+                            className="w-full bg-white border-2 border-amber-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 resize-none"
                             rows={2}
                             placeholder="プレゼントのアイデアなど..."
                         />
@@ -149,11 +149,11 @@ export default function EventModal({ isOpen, onClose, onSaved }: EventModalProps
                 </div>
 
                 {/* Actions */}
-                <div className="p-4 border-t border-white/5">
+                <div className="p-4 border-t border-amber-200/50">
                     <button
                         onClick={handleSave}
                         disabled={!title.trim() || !date || isSaving}
-                        className="w-full py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+                        className="w-full py-3 bg-gradient-to-r from-amber-400 to-orange-500 text-white font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity shadow-lg"
                     >
                         {isSaving ? "保存中..." : "登録する 🎉"}
                     </button>
