@@ -4,6 +4,7 @@ import * as dbOps from "@/db/operations";
 
 // シンプルなCredentials認証
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    trustHost: true, // Cloudflare Workers用
     providers: [
         Credentials({
             name: "email",
