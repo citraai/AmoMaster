@@ -70,10 +70,10 @@ export async function POST(request: NextRequest) {
             case "event":
                 return NextResponse.json(await dbOps.createEvent(userId, data));
             case "settings":
-                await dbOps.updateSettings(userId, data);
+                await dbOps.upsertSettings(userId, data);
                 return NextResponse.json({ success: true });
             case "progress":
-                await dbOps.updateUserProgress(userId, data);
+                await dbOps.upsertUserProgress(userId, data);
                 return NextResponse.json({ success: true });
             case "profile":
                 await dbOps.updateUserProfile(userId, data);

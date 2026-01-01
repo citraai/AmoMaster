@@ -128,6 +128,21 @@ export async function deletePreference(userId: string, id: string) {
     await db.delete(preferences).where(and(eq(preferences.id, id), eq(preferences.userId, userId)));
 }
 
+export async function updatePreference(userId: string, id: string, data: {
+    category?: string;
+    content?: string;
+    tags?: string[];
+}) {
+    const db = await getDb();
+    await db.update(preferences)
+        .set({
+            category: data.category,
+            content: data.content,
+            tags: data.tags ? JSON.stringify(data.tags) : undefined,
+        })
+        .where(and(eq(preferences.id, id), eq(preferences.userId, userId)));
+}
+
 // ==================== Quotes ====================
 
 export async function createQuote(userId: string, data: {
@@ -159,6 +174,21 @@ export async function getQuotes(userId: string) {
 export async function deleteQuote(userId: string, id: string) {
     const db = await getDb();
     await db.delete(quotes).where(and(eq(quotes.id, id), eq(quotes.userId, userId)));
+}
+
+export async function updateQuote(userId: string, id: string, data: {
+    content?: string;
+    context?: string;
+    tags?: string[];
+}) {
+    const db = await getDb();
+    await db.update(quotes)
+        .set({
+            content: data.content,
+            context: data.context,
+            tags: data.tags ? JSON.stringify(data.tags) : undefined,
+        })
+        .where(and(eq(quotes.id, id), eq(quotes.userId, userId)));
 }
 
 // ==================== Events ====================
