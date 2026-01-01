@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { db } from "@/db/client";
+import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -39,6 +39,7 @@ export async function GET() {
 
         const userId = session.user.id;
         const today = getTodayString();
+        const db = await getDb();
 
         // ユーザー情報を取得
         const result = await db.select().from(users).where(eq(users.id, userId));
@@ -91,6 +92,7 @@ export async function POST() {
 
         const userId = session.user.id;
         const today = getTodayString();
+        const db = await getDb();
 
         // ユーザー情報を取得
         const result = await db.select().from(users).where(eq(users.id, userId));

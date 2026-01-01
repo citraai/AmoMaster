@@ -1,8 +1,8 @@
 /**
- * Turso DB Operations - Drizzle ORM CRUD (User-Scoped)
+ * D1 DB Operations - Drizzle ORM CRUD (User-Scoped)
  */
 
-import { db } from "./client";
+import { getDb } from "./client";
 import { preferences, quotes, events, settings, users, userProgress } from "./schema";
 import { eq, and } from "drizzle-orm";
 
@@ -25,12 +25,14 @@ function simpleHash(password: string): string {
 
 // ユーザー取得
 export async function getUserByEmail(email: string) {
+    const db = await getDb();
     const results = await db.select().from(users).where(eq(users.email, email)).limit(1);
     return results[0] || null;
 }
 
 // ユーザー登録
 export async function registerUser(email: string, password: string, name?: string) {
+    const db = await getDb();
     const existing = await getUserByEmail(email);
 
     if (existing) {
@@ -60,7 +62,7 @@ export async function registerUser(email: string, password: string, name?: strin
         passwordHash,
         name: name || email.split("@")[0],
         createdAt,
-        trialStartDate, // トライアル開始日
+        trialStartDate,
     });
 
     return { id, email, name: name || email.split("@")[0], createdAt, passwordHash, trialStartDate };
@@ -76,6 +78,7 @@ export async function updateUserProfile(userId: string, data: {
     genderCustom?: string;
     partnerPronoun?: string;
 }) {
+    const db = await getDb();
     await db.update(users)
         .set({
             gender: data.gender,
@@ -87,6 +90,7 @@ export async function updateUserProfile(userId: string, data: {
 }
 
 export async function getUserProfile(userId: string) {
+    const db = await getDb();
     const results = await db.select().from(users).where(eq(users.id, userId)).limit(1);
     return results[0] || null;
 }
@@ -98,6 +102,7 @@ export async function createPreference(userId: string, data: {
     content: string;
     tags?: string[];
 }) {
+    const db = await getDb();
     const id = `pref_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const createdAt = new Date().toISOString();
 
@@ -114,34 +119,12 @@ export async function createPreference(userId: string, data: {
 }
 
 export async function getPreferences(userId: string) {
-    const results = await db.select().from(preferences).where(eq(preferences.userId, userId));
-
-    return results.map(row => ({
-        id: row.id,
-        category: row.category,
-        content: row.content,
-        tags: row.tags ? JSON.parse(row.tags) : undefined,
-        createdAt: row.createdAt,
-    }));
-}
-
-export async function updatePreference(userId: string, id: string, data: {
-    category?: string;
-    content?: string;
-    tags?: string[];
-}) {
-    const updateData: Record<string, unknown> = {};
-
-    if (data.category) updateData.category = data.category;
-    if (data.content) updateData.content = data.content;
-    if (data.tags !== undefined) updateData.tags = data.tags ? JSON.stringify(data.tags) : null;
-
-    await db.update(preferences)
-        .set(updateData)
-        .where(and(eq(preferences.id, id), eq(preferences.userId, userId)));
+    const db = await getDb();
+    return db.select().from(preferences).where(eq(preferences.userId, userId));
 }
 
 export async function deletePreference(userId: string, id: string) {
+    const db = await getDb();
     await db.delete(preferences).where(and(eq(preferences.id, id), eq(preferences.userId, userId)));
 }
 
@@ -152,6 +135,7 @@ export async function createQuote(userId: string, data: {
     context?: string;
     tags?: string[];
 }) {
+    const db = await getDb();
     const id = `quote_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const createdAt = new Date().toISOString();
 
@@ -168,35 +152,13 @@ export async function createQuote(userId: string, data: {
 }
 
 export async function getQuotes(userId: string) {
-    const results = await db.select().from(quotes).where(eq(quotes.userId, userId));
-
-    return results.map(row => ({
-        id: row.id,
-        content: row.content,
-        context: row.context || undefined,
-        tags: row.tags ? JSON.parse(row.tags) : undefined,
-        createdAt: row.createdAt,
-    }));
+    const db = await getDb();
+    return db.select().from(quotes).where(eq(quotes.userId, userId));
 }
 
 export async function deleteQuote(userId: string, id: string) {
+    const db = await getDb();
     await db.delete(quotes).where(and(eq(quotes.id, id), eq(quotes.userId, userId)));
-}
-
-export async function updateQuote(userId: string, id: string, data: {
-    content?: string;
-    context?: string;
-    tags?: string[];
-}) {
-    const updateData: Record<string, unknown> = {};
-
-    if (data.content) updateData.content = data.content;
-    if (data.context !== undefined) updateData.context = data.context || null;
-    if (data.tags !== undefined) updateData.tags = data.tags ? JSON.stringify(data.tags) : null;
-
-    await db.update(quotes)
-        .set(updateData)
-        .where(and(eq(quotes.id, id), eq(quotes.userId, userId)));
 }
 
 // ==================== Events ====================
@@ -208,6 +170,7 @@ export async function createEvent(userId: string, data: {
     isRecurring?: boolean;
     notes?: string;
 }) {
+    const db = await getDb();
     const id = `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const createdAt = new Date().toISOString();
 
@@ -226,167 +189,179 @@ export async function createEvent(userId: string, data: {
 }
 
 export async function getEvents(userId: string) {
-    const results = await db.select().from(events).where(eq(events.userId, userId));
-
-    return results.map(row => ({
-        id: row.id,
-        type: row.type,
-        title: row.title,
-        date: row.date,
-        isRecurring: Boolean(row.isRecurring),
-        notes: row.notes || undefined,
-        createdAt: row.createdAt,
-    }));
+    const db = await getDb();
+    return db.select().from(events).where(eq(events.userId, userId));
 }
 
 export async function deleteEvent(userId: string, id: string) {
+    const db = await getDb();
     await db.delete(events).where(and(eq(events.id, id), eq(events.userId, userId)));
 }
 
 // ==================== Settings ====================
 
 export async function getSettings(userId: string) {
+    const db = await getDb();
     const results = await db.select().from(settings).where(eq(settings.userId, userId)).limit(1);
-
-    if (results.length === 0) {
-        // デフォルト設定を作成
-        const id = `settings_${userId}`;
-        await db.insert(settings).values({
-            id,
-            userId,
-            partnerName: "パートナー",
-            partnerNickname: null,
-            startDate: null,
-        });
-
-        return { partnerName: "パートナー" };
-    }
-
-    const row = results[0];
-    return {
-        partnerName: row.partnerName,
-        partnerNickname: row.partnerNickname || undefined,
-        startDate: row.startDate || undefined,
-    };
+    return results[0] || null;
 }
 
-export async function updateSettings(userId: string, data: {
+export async function upsertSettings(userId: string, data: {
     partnerName?: string;
     partnerNickname?: string;
     startDate?: string;
 }) {
-    const existing = await db.select().from(settings).where(eq(settings.userId, userId)).limit(1);
+    const db = await getDb();
+    const existing = await getSettings(userId);
 
-    if (existing.length === 0) {
+    if (existing) {
+        await db.update(settings)
+            .set({
+                partnerName: data.partnerName || existing.partnerName,
+                partnerNickname: data.partnerNickname !== undefined ? data.partnerNickname : existing.partnerNickname,
+                startDate: data.startDate !== undefined ? data.startDate : existing.startDate,
+            })
+            .where(eq(settings.userId, userId));
+    } else {
+        const id = `settings_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         await db.insert(settings).values({
-            id: `settings_${userId}`,
+            id,
             userId,
             partnerName: data.partnerName || "パートナー",
             partnerNickname: data.partnerNickname || null,
             startDate: data.startDate || null,
         });
-    } else {
-        await db.update(settings)
-            .set({
-                partnerName: data.partnerName,
-                partnerNickname: data.partnerNickname || null,
-                startDate: data.startDate || null,
-            })
-            .where(eq(settings.userId, userId));
     }
+
+    return getSettings(userId);
 }
 
-// ==================== User Progress (Missions) ====================
+// ==================== User Progress ====================
 
 export async function getUserProgress(userId: string) {
+    const db = await getDb();
     const results = await db.select().from(userProgress).where(eq(userProgress.userId, userId)).limit(1);
+    return results[0] || null;
+}
 
-    if (results.length === 0) {
-        return {
-            xp: 0,
-            totalCompleted: 0,
-            lastMissionDate: null,
-            completedMissions: [],
-        };
+export async function upsertUserProgress(userId: string, data: {
+    xp?: number;
+    totalCompleted?: number;
+    lastMissionDate?: string;
+    completedMissions?: string[];
+}) {
+    const db = await getDb();
+    const existing = await getUserProgress(userId);
+    const now = new Date().toISOString();
+
+    if (existing) {
+        await db.update(userProgress)
+            .set({
+                xp: data.xp !== undefined ? data.xp : existing.xp,
+                totalCompleted: data.totalCompleted !== undefined ? data.totalCompleted : existing.totalCompleted,
+                lastMissionDate: data.lastMissionDate !== undefined ? data.lastMissionDate : existing.lastMissionDate,
+                completedMissions: data.completedMissions ? JSON.stringify(data.completedMissions) : existing.completedMissions,
+                updatedAt: now,
+            })
+            .where(eq(userProgress.userId, userId));
+    } else {
+        const id = `progress_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        await db.insert(userProgress).values({
+            id,
+            userId,
+            xp: data.xp || 0,
+            totalCompleted: data.totalCompleted || 0,
+            lastMissionDate: data.lastMissionDate || null,
+            completedMissions: data.completedMissions ? JSON.stringify(data.completedMissions) : null,
+            createdAt: now,
+            updatedAt: now,
+        });
     }
 
-    const row = results[0];
+    return getUserProgress(userId);
+}
+
+// ==================== AI Usage ====================
+
+export async function checkAndIncrementAIUsage(userId: string): Promise<{ allowed: boolean; remaining: number; isTrialActive: boolean }> {
+    const db = await getDb();
+    const DAILY_LIMIT = 3;
+    const TRIAL_DAYS = 30;
+
+    const user = await getUserProfile(userId);
+    if (!user) {
+        return { allowed: false, remaining: 0, isTrialActive: false };
+    }
+
+    // プレミアムユーザーは無制限
+    if (user.isPremium) {
+        return { allowed: true, remaining: 999, isTrialActive: false };
+    }
+
+    // トライアル期間チェック
+    const trialStart = user.trialStartDate ? new Date(user.trialStartDate) : null;
+    const now = new Date();
+    const isTrialActive = trialStart ? (now.getTime() - trialStart.getTime()) < TRIAL_DAYS * 24 * 60 * 60 * 1000 : false;
+
+    if (!isTrialActive) {
+        return { allowed: false, remaining: 0, isTrialActive: false };
+    }
+
+    // 日付チェックとリセット
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    let currentCount = user.aiUsageCount || 0;
+
+    if (user.aiUsageDate !== today) {
+        // 日付が変わったらリセット
+        currentCount = 0;
+    }
+
+    if (currentCount >= DAILY_LIMIT) {
+        return { allowed: false, remaining: 0, isTrialActive: true };
+    }
+
+    // 使用回数をインクリメント
+    await db.update(users)
+        .set({
+            aiUsageCount: currentCount + 1,
+            aiUsageDate: today,
+            updatedAt: new Date().toISOString(),
+        })
+        .where(eq(users.id, userId));
+
+    return { allowed: true, remaining: DAILY_LIMIT - currentCount - 1, isTrialActive: true };
+}
+
+// ==================== 統合データ取得 ====================
+
+export async function getAllUserData(userId: string) {
+    const [prefs, quoteList, eventList, userSettings, progress] = await Promise.all([
+        getPreferences(userId),
+        getQuotes(userId),
+        getEvents(userId),
+        getSettings(userId),
+        getUserProgress(userId),
+    ]);
+
     return {
-        xp: row.xp,
-        totalCompleted: row.totalCompleted,
-        lastMissionDate: row.lastMissionDate,
-        completedMissions: row.completedMissions ? JSON.parse(row.completedMissions) : [],
+        preferences: prefs,
+        quotes: quoteList,
+        events: eventList,
+        settings: userSettings,
+        progress,
     };
 }
 
-export async function updateUserProgress(userId: string, data: {
-    xp: number;
-    totalCompleted: number;
-    lastMissionDate: string;
-    completedMissions: string[];
-}) {
-    const existing = await db.select().from(userProgress).where(eq(userProgress.userId, userId)).limit(1);
+// ==================== アカウント削除 ====================
 
-    if (existing.length === 0) {
-        await db.insert(userProgress).values({
-            id: `progress_${userId}`,
-            userId,
-            xp: data.xp,
-            totalCompleted: data.totalCompleted,
-            lastMissionDate: data.lastMissionDate,
-            completedMissions: JSON.stringify(data.completedMissions),
-            createdAt: new Date().toISOString(),
-        });
-    } else {
-        await db.update(userProgress)
-            .set({
-                xp: data.xp,
-                totalCompleted: data.totalCompleted,
-                lastMissionDate: data.lastMissionDate,
-                completedMissions: JSON.stringify(data.completedMissions),
-                updatedAt: new Date().toISOString(),
-            })
-            .where(eq(userProgress.userId, userId));
-    }
-}
-
-// ==================== Account Deletion ====================
-
-/**
- * アカウント削除 - App Store ガイドライン 5.1.1 準拠
- * ユーザーとその全関連データを完全に削除
- */
-export async function deleteUserAccount(userId: string): Promise<{ success: boolean; deletedTables: string[] }> {
-    const deletedTables: string[] = [];
-
-    try {
-        // 1. Preferences削除
-        await db.delete(preferences).where(eq(preferences.userId, userId));
-        deletedTables.push("preferences");
-
-        // 2. Quotes削除
-        await db.delete(quotes).where(eq(quotes.userId, userId));
-        deletedTables.push("quotes");
-
-        // 3. Events削除
-        await db.delete(events).where(eq(events.userId, userId));
-        deletedTables.push("events");
-
-        // 4. Settings削除
-        await db.delete(settings).where(eq(settings.userId, userId));
-        deletedTables.push("settings");
-
-        // 5. User Progress削除
-        await db.delete(userProgress).where(eq(userProgress.userId, userId));
-        deletedTables.push("userProgress");
-
-        // 6. User本体を削除（最後に実行）
-        await db.delete(users).where(eq(users.id, userId));
-        deletedTables.push("users");
-
-        return { success: true, deletedTables };
-    } catch (error) {
-        console.error("[deleteUserAccount] Error:", error);
-        return { success: false, deletedTables };
-    }
+export async function deleteUserAccount(userId: string): Promise<void> {
+    const db = await getDb();
+    // すべての関連データを削除
+    await db.delete(preferences).where(eq(preferences.userId, userId));
+    await db.delete(quotes).where(eq(quotes.userId, userId));
+    await db.delete(events).where(eq(events.userId, userId));
+    await db.delete(settings).where(eq(settings.userId, userId));
+    await db.delete(userProgress).where(eq(userProgress.userId, userId));
+    // 最後にユーザー自体を削除
+    await db.delete(users).where(eq(users.id, userId));
 }
