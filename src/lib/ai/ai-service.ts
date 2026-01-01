@@ -1,12 +1,11 @@
 /**
  * AI Service - 統合AIサービス
  * 
- * Gemini Nano（ローカル）を優先し、
- * 利用不可の場合はOpenAI GPT-4o-miniにフォールバック。
+ * サーバーサイドAPIを経由してOpenAI GPT-4o-miniを使用。
+ * Cloudflare Workers環境対応。
  */
 
 import { isNanoAvailable, generateWithNano } from "./gemini-nano";
-import { isApiAvailable, generateWithApi } from "./openai-api";
 import { buildRagContextAsync } from "./rag";
 import { getMasterSystemPrompt } from "./prompts";
 
@@ -15,6 +14,35 @@ export type AIProvider = "nano" | "api" | "mock";
 interface AIResponse {
     text: string;
     provider: AIProvider;
+}
+
+/**
+ * サーバーサイドAPIを使用してAI応答を取得
+ */
+async function callServerApi(prompt: string, systemPrompt: string): Promise<string | null> {
+    try {
+        console.log("[DEBUG] Calling server-side AI API...");
+        const response = await fetch("/api/ai/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt, systemPrompt }),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            console.error("[DEBUG] API error:", error);
+            return null;
+        }
+
+        const data = await response.json();
+        console.log("[DEBUG] ✅ Server API success");
+        return data.response;
+    } catch (error) {
+        console.error("[DEBUG] ❌ Server API call failed:", error);
+        return null;
+    }
 }
 
 /**
@@ -29,15 +57,9 @@ export async function detectProvider(): Promise<AIProvider> {
         return "nano";
     }
 
-    // 2. Gemini API（クラウド）
-    if (isApiAvailable()) {
-        console.log("[DEBUG] Provider: API");
-        return "api";
-    }
-
-    // 3. フォールバック（モック）
-    console.log("[DEBUG] Provider: Mock");
-    return "mock";
+    // 2. サーバーサイドAPI（常に利用可能として扱う）
+    console.log("[DEBUG] Provider: API (server-side)");
+    return "api";
 }
 
 /**
@@ -75,7 +97,8 @@ export async function sendMessage(userMessage: string, partnerNickname?: string)
     if (provider === "nano") {
         text = await generateWithNano(fullPrompt, systemPrompt);
     } else if (provider === "api") {
-        text = await generateWithApi(fullPrompt, systemPrompt);
+        // サーバーサイドAPIを使用
+        text = await callServerApi(fullPrompt, systemPrompt);
     }
 
     // AIが失敗した場合はモックにフォールバック
