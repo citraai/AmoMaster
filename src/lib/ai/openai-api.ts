@@ -10,7 +10,7 @@ let openai: OpenAI | null = null;
  * APIキーを取得
  */
 function getApiKey(): string | null {
-    if (typeof window === "undefined") return null;
+    // Cloudflare Workersでも動作するように変更
     return process.env.NEXT_PUBLIC_OPENAI_API_KEY || null;
 }
 
