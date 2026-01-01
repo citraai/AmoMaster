@@ -5,6 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import * as dataService from "@/lib/data-service";
+import FeedbackModal from "@/components/FeedbackModal";
 
 export default function SettingsPage() {
     const { data: session, status } = useSession();
@@ -19,6 +20,7 @@ export default function SettingsPage() {
     const [deleteConfirmText, setDeleteConfirmText] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState("");
+    const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
     // 認証チェック
     useEffect(() => {
@@ -222,6 +224,22 @@ export default function SettingsPage() {
                     </div>
                 </section>
 
+                {/* フィードバック */}
+                <section className="glass rounded-2xl p-4 border border-white/5">
+                    <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
+                        <span>📮</span> フィードバック
+                    </h2>
+                    <p className="text-white/60 text-sm mb-4">
+                        バグや不具合を見つけたら、または新しい機能をご要望の場合は、こちらからお知らせください。
+                    </p>
+                    <button
+                        onClick={() => setIsFeedbackOpen(true)}
+                        className="w-full py-3 bg-gradient-to-r from-pink-600 to-red-600 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                    >
+                        📝 要望・バグを報告する
+                    </button>
+                </section>
+
                 {/* 危険ゾーン - アカウント削除 */}
                 <section className="glass rounded-2xl p-4 border border-red-500/30 bg-red-500/5">
                     <h2 className="text-red-400 font-semibold mb-4 flex items-center gap-2">
@@ -313,6 +331,11 @@ export default function SettingsPage() {
                     </div>
                 </div>
             </nav>
+
+            <FeedbackModal
+                isOpen={isFeedbackOpen}
+                onClose={() => setIsFeedbackOpen(false)}
+            />
         </div>
     );
 }
