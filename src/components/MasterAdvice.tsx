@@ -73,8 +73,8 @@ export default function MasterAdvice({ className = "" }: MasterAdviceProps) {
                 {/* ヘッダー */}
                 <div className="flex items-center justify-between px-5 pt-5 pb-3">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center shadow-lg ring-2 ring-white/20">
-                            <span className="text-lg">💕</span>
+                        <div className="w-12 h-12 rounded-full overflow-hidden shadow-lg ring-2 ring-white/20">
+                            <img src="/master-icon.png" alt="恋愛マスター" className="w-full h-full object-cover" />
                         </div>
                         <div>
                             <h3 className="text-white font-bold text-sm">恋愛マスター</h3>
