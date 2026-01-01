@@ -1,48 +1,38 @@
-import { createClient, type Client } from "@libsql/client/web";
-import { drizzle, type LibSQLDatabase } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/d1";
+import type { DrizzleD1Database } from "drizzle-orm/d1";
 import * as schema from "./schema";
+import { getRequestContext } from "@cloudflare/next-on-pages";
 
-// 遅延初期化用の変数
-let tursoClient: Client | null = null;
-let drizzleDb: LibSQLDatabase<typeof schema> | null = null;
+export type Database = DrizzleD1Database<typeof schema>;
 
-// Tursoクライアントを取得（遅延初期化）
-function getTursoClient(): Client {
-    if (!tursoClient) {
-        const url = process.env.TURSO_DATABASE_URL || process.env.NEXT_PUBLIC_TURSO_DATABASE_URL || "";
-        const authToken = process.env.TURSO_AUTH_TOKEN || process.env.NEXT_PUBLIC_TURSO_AUTH_TOKEN || "";
-
-        if (!url) {
-            throw new Error("TURSO_DATABASE_URL is not set");
-        }
-
-        tursoClient = createClient({ url, authToken });
-    }
-    return tursoClient;
+// D1データベースインスタンスを取得する関数
+// Cloudflare Workers環境では、D1はenv.DBとしてバインドされる
+export function getDb(): Database {
+    const { env } = getRequestContext();
+    const d1 = (env as { DB: D1Database }).DB;
+    return drizzle(d1, { schema });
 }
 
-// Drizzle DBインスタンスを取得（遅延初期化）
-function getDb(): LibSQLDatabase<typeof schema> {
-    if (!drizzleDb) {
-        drizzleDb = drizzle(getTursoClient(), { schema });
-    }
-    return drizzleDb;
-}
-
-// 後方互換性のためのプロキシ
-export const db = new Proxy({} as LibSQLDatabase<typeof schema>, {
+// グローバルdbプロキシ（後方互換性のため）
+// 注意: これはリクエストコンテキスト内でのみ動作する
+export const db = new Proxy({} as Database, {
     get(_target, prop) {
         return (getDb() as unknown as Record<string, unknown>)[prop];
     },
 });
 
+// SQL ヘルパーをエクスポート
+import { sql } from "drizzle-orm";
+export { sql };
+
 // 接続確認用
-export async function testConnection() {
+export async function testConnection(): Promise<boolean> {
     try {
-        await getTursoClient().execute("SELECT 1");
+        const database = getDb();
+        await database.run(sql`SELECT 1`);
         return true;
     } catch (error) {
-        console.error("Turso connection failed:", error);
+        console.error("D1 connection failed:", error);
         return false;
     }
 }
