@@ -109,7 +109,7 @@ export const DAILY_KATSU_MESSAGES = [
   },
   {
     id: 7,
-    message: "今日やるべきこと：パートナーに『今日も可愛いね』って言え。照れるな、言え",
+    message: "今日やるべきこと：パートナーに『今日も素敵だね』って言え。照れるな、言え",
     type: "mission"
   },
   {
@@ -126,6 +126,81 @@ export const DAILY_KATSU_MESSAGES = [
     id: 10,
     message: "「忙しい」を言い訳にするな。LINEの1通くらい送れるだろ？",
     type: "motivation"
+  },
+  {
+    id: 11,
+    message: "パートナーの笑顔、最後に見たのはいつだ？お前が笑わせてやれよ",
+    type: "challenge"
+  },
+  {
+    id: 12,
+    message: "口先だけの「愛してる」なんて意味ねぇんだよ。行動で示せ",
+    type: "warning"
+  },
+  {
+    id: 13,
+    message: "パートナーの夢、知ってるか？応援してるか？それが本当の愛だ",
+    type: "reflection"
+  },
+  {
+    id: 14,
+    message: "記念日まであと何日だ？把握してないなら今すぐカレンダー見ろ",
+    type: "action"
+  },
+  {
+    id: 15,
+    message: "スマホいじってる暇があったらパートナーの顔見て話しかけろ",
+    type: "warning"
+  },
+  {
+    id: 16,
+    message: "今日のミッション：パートナーの好きなお菓子を買って帰れ。喜ぶ顔見てこい",
+    type: "mission"
+  },
+  {
+    id: 17,
+    message: "「察してほしい」なんて甘えだ。パートナーに気持ちは言葉で伝えろ",
+    type: "motivation"
+  },
+  {
+    id: 18,
+    message: "パートナーの苦手なもの、ちゃんと覚えてるか？地雷を踏むな",
+    type: "challenge"
+  },
+  {
+    id: 19,
+    message: "家事、ちゃんと分担してるか？黙ってやってもらってんじゃねぇだろうな？",
+    type: "warning"
+  },
+  {
+    id: 20,
+    message: "SNSで他の異性の投稿いいねしてる暇があったらパートナーに連絡しろ",
+    type: "warning"
+  },
+  {
+    id: 21,
+    message: "パートナーが疲れてる時、お前は何をする？答えられないなら問題だ",
+    type: "reflection"
+  },
+  {
+    id: 22,
+    message: "「前と変わった」って言われる前に、マンネリ打破しろ。新しいこと考えろ",
+    type: "action"
+  },
+  {
+    id: 23,
+    message: "今日、パートナーにハグしたか？してないなら、家に帰ったらすぐしろ",
+    type: "mission"
+  },
+  {
+    id: 24,
+    message: "パートナーの親や友達を大切にしてるか？それもパートナーを大切にすることだ",
+    type: "motivation"
+  },
+  {
+    id: 25,
+    message: "喧嘩したら素直に謝れ。プライドなんか捨てろ。パートナーの方が大事だろ",
+    type: "challenge"
   }
 ];
 
