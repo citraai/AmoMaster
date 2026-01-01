@@ -193,7 +193,7 @@ export default function SettingsPage() {
                         </div>
                         <div className="flex justify-between">
                             <span className="text-white/60">ストレージ</span>
-                            <span className="text-white">Turso DB</span>
+                            <span className="text-white">Cloudflare D1</span>
                         </div>
                     </div>
 
