@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { sendMessage, detectProvider, getProviderLabel, AIProvider } from "@/lib/ai/ai-service";
 import { getPartnerLabelFromDB, getPartnerNicknameFromDB } from "@/lib/user-profile";
+import FeedbackModal from "@/components/FeedbackModal";
 
 interface Message {
     id: string;
@@ -17,6 +18,7 @@ export default function MasterPage() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState("");
     const [isTyping, setIsTyping] = useState(false);
+    const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
     const [partnerName, setPartnerName] = useState("パートナー");
     const [partnerNickname, setPartnerNickname] = useState<string | undefined>(undefined);
     const [currentProvider, setCurrentProvider] = useState<AIProvider>("mock");
@@ -164,11 +166,21 @@ export default function MasterPage() {
                             </svg>
                         </Link>
                         <div>
-                            <h1 className="text-white font-bold text-lg">🧠 恋愛マスター</h1>
+                            <h1 className="text-white font-bold text-lg flex items-center gap-2">
+                                <img src="/master-icon.png" alt="恋愛マスター" className="w-8 h-8 rounded-full" />
+                                恋愛マスター
+                            </h1>
                             <p className="text-white/40 text-[10px]">毒舌だが愛はある</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
+                        {/* フィードバックボタン */}
+                        <button
+                            onClick={() => setIsFeedbackOpen(true)}
+                            className="bg-white/10 hover:bg-white/20 text-white rounded-full px-3 py-1 text-xs font-medium transition-colors"
+                        >
+                            📮 要望・バグ
+                        </button>
                         {/* 残り回数表示 */}
                         {usageInfo && (
                             <div className={`px-2 py-1 rounded-full text-xs ${usageInfo.inTrial
@@ -208,8 +220,8 @@ export default function MasterPage() {
                             className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                         >
                             {message.role === "master" && (
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mr-2 flex-shrink-0">
-                                    <span className="text-lg">👨‍🏫</span>
+                                <div className="w-10 h-10 rounded-full overflow-hidden mr-2 flex-shrink-0">
+                                    <img src="/master-icon.png" alt="恋愛マスター" className="w-full h-full object-cover" />
                                 </div>
                             )}
                             <div
@@ -242,8 +254,8 @@ export default function MasterPage() {
 
                     {isTyping && (
                         <div className="flex justify-start">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center mr-2">
-                                <span className="text-lg">👨‍🏫</span>
+                            <div className="w-10 h-10 rounded-full overflow-hidden mr-2">
+                                <img src="/master-icon.png" alt="恋愛マスター" className="w-full h-full object-cover" />
                             </div>
                             <div className="glass border border-white/10 p-4 rounded-2xl rounded-bl-md">
                                 <div className="flex gap-1">
@@ -287,6 +299,11 @@ export default function MasterPage() {
                     </p>
                 </div>
             </div>
-        </div>
+
+            <FeedbackModal
+                isOpen={isFeedbackOpen}
+                onClose={() => setIsFeedbackOpen(false)}
+            />
+        </div >
     );
 }

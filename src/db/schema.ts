@@ -80,3 +80,12 @@ export const userProgress = sqliteTable("user_progress", {
     createdAt: text("created_at").notNull(),
     updatedAt: text("updated_at"),
 });
+
+// Feedback テーブル
+export const feedback = sqliteTable("feedback", {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    type: text("type").notNull(), // "bug" | "feature" | "other"
+    content: text("content").notNull(),
+    createdAt: text("created_at").notNull(),
+});

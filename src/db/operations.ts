@@ -3,7 +3,7 @@
  */
 
 import { getDb } from "./client";
-import { preferences, quotes, events, settings, users, userProgress } from "./schema";
+import { preferences, quotes, events, settings, users, userProgress, feedback } from "./schema";
 import { eq, and } from "drizzle-orm";
 
 // より堅牢なハッシュ関数（大文字小文字区別あり）
@@ -395,3 +395,25 @@ export async function deleteUserAccount(userId: string): Promise<void> {
     // 最後にユーザー自体を削除
     await db.delete(users).where(eq(users.id, userId));
 }
+
+// ==================== Feedback ====================
+
+export async function createFeedback(userId: string, data: {
+    type: string;
+    content: string;
+}) {
+    const db = await getDb();
+    const id = \b_\_\\;
+    const createdAt = new Date().toISOString();
+
+    await db.insert(feedback).values({
+        id,
+        userId,
+        type: data.type,
+        content: data.content,
+        createdAt,
+    });
+
+    return { id, userId, ...data, createdAt };
+}
+
