@@ -209,9 +209,9 @@ export default function MineCheckerPage() {
                         <img src="/nav-records.png" alt="記録" className="w-8 h-8 rounded-full object-cover" />
                         <span className="text-xs">記録</span>
                     </Link>
-                    <Link href="/missions" className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-colors">
-                        <img src="/nav-missions.png" alt="ミッション" className="w-8 h-8 rounded-full object-cover" />
-                        <span className="text-xs">ミッション</span>
+                    <Link href="/diary" className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-colors">
+                        <img src="/nav-missions.png" alt="日記" className="w-8 h-8 rounded-full object-cover" />
+                        <span className="text-xs">日記</span>
                     </Link>
                     <Link href="/mine-checker" className="flex flex-col items-center gap-1 nav-item-active">
                         <img src="/nav-danger.png" alt="地雷" className="w-8 h-8 rounded-full object-cover scale-110" />

@@ -89,3 +89,14 @@ export const feedback = sqliteTable("feedback", {
     content: text("content").notNull(),
     createdAt: text("created_at").notNull(),
 });
+
+// Diary Entries テーブル（日記機能）
+export const diaryEntries = sqliteTable("diary_entries", {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    content: text("content").notNull(), // 日記本文
+    mood: text("mood"), // 感情（オプション）: "happy" | "sad" | "angry" | "anxious" | "peaceful" | "excited" | "tired" | "neutral"
+    aiInsight: text("ai_insight"), // AIによる分析コメント
+    createdAt: text("created_at").notNull(),
+    updatedAt: text("updated_at"),
+});

@@ -3,8 +3,8 @@
  */
 
 import { getDb } from "./client";
-import { preferences, quotes, events, settings, users, userProgress, feedback } from "./schema";
-import { eq, and } from "drizzle-orm";
+import { preferences, quotes, events, settings, users, userProgress, feedback, diaryEntries } from "./schema";
+import { eq, and, desc } from "drizzle-orm";
 
 // より堅牢なハッシュ関数（大文字小文字区別あり）
 function simpleHash(password: string): string {
@@ -417,3 +417,71 @@ export async function createFeedback(userId: string, data: {
     return { id, userId, ...data, createdAt };
 }
 
+// ==================== Diary Entries ====================
+
+export async function createDiaryEntry(userId: string, data: {
+    content: string;
+    mood?: string;
+    aiInsight?: string;
+}) {
+    const db = await getDb();
+    const id = `diary_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const createdAt = new Date().toISOString();
+
+    await db.insert(diaryEntries).values({
+        id,
+        userId,
+        content: data.content,
+        mood: data.mood || null,
+        aiInsight: data.aiInsight || null,
+        createdAt,
+        updatedAt: createdAt,
+    });
+
+    return { id, userId, ...data, createdAt };
+}
+
+export async function getDiaryEntries(userId: string, limit?: number) {
+    const db = await getDb();
+    const query = db.select().from(diaryEntries)
+        .where(eq(diaryEntries.userId, userId))
+        .orderBy(desc(diaryEntries.createdAt));
+
+    if (limit) {
+        return query.limit(limit);
+    }
+    return query;
+}
+
+export async function getDiaryEntry(userId: string, id: string) {
+    const db = await getDb();
+    const results = await db.select().from(diaryEntries)
+        .where(and(eq(diaryEntries.id, id), eq(diaryEntries.userId, userId)))
+        .limit(1);
+    return results[0] || null;
+}
+
+export async function updateDiaryEntry(userId: string, id: string, data: {
+    content?: string;
+    mood?: string;
+    aiInsight?: string;
+}) {
+    const db = await getDb();
+    const updatedAt = new Date().toISOString();
+
+    await db.update(diaryEntries)
+        .set({
+            content: data.content,
+            mood: data.mood,
+            aiInsight: data.aiInsight,
+            updatedAt,
+        })
+        .where(and(eq(diaryEntries.id, id), eq(diaryEntries.userId, userId)));
+
+    return getDiaryEntry(userId, id);
+}
+
+export async function deleteDiaryEntry(userId: string, id: string) {
+    const db = await getDb();
+    await db.delete(diaryEntries).where(and(eq(diaryEntries.id, id), eq(diaryEntries.userId, userId)));
+}
