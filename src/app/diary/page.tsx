@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -25,6 +25,10 @@ interface DiaryEntry {
     createdAt: string;
 }
 
+interface GroupedEntries {
+    [key: string]: DiaryEntry[];
+}
+
 export default function DiaryPage() {
     const { data: session, status } = useSession();
     const router = useRouter();
@@ -35,6 +39,8 @@ export default function DiaryPage() {
     const [selectedMood, setSelectedMood] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [generateAI, setGenerateAI] = useState(true);
+    const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
+    const [collapsedMonths, setCollapsedMonths] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -62,6 +68,30 @@ export default function DiaryPage() {
             loadEntries();
         }
     }, [status]);
+
+    // 月別にグループ化
+    const groupedEntries = useMemo(() => {
+        const groups: GroupedEntries = {};
+        entries.forEach((entry) => {
+            const date = new Date(entry.createdAt);
+            const key = `${date.getFullYear()}年${date.getMonth() + 1}月`;
+            if (!groups[key]) {
+                groups[key] = [];
+            }
+            groups[key].push(entry);
+        });
+        return groups;
+    }, [entries]);
+
+    const sortedMonths = useMemo(() => {
+        return Object.keys(groupedEntries).sort((a, b) => {
+            // 新しい月が上に来るようにソート
+            const [yearA, monthA] = a.match(/\d+/g)?.map(Number) || [0, 0];
+            const [yearB, monthB] = b.match(/\d+/g)?.map(Number) || [0, 0];
+            if (yearA !== yearB) return yearB - yearA;
+            return monthB - monthA;
+        });
+    }, [groupedEntries]);
 
     const handleSubmit = async () => {
         if (!content.trim()) return;
@@ -106,11 +136,34 @@ export default function DiaryPage() {
         }
     };
 
+    const toggleEntryExpanded = (id: string) => {
+        setExpandedEntries((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            return next;
+        });
+    };
+
+    const toggleMonthCollapsed = (month: string) => {
+        setCollapsedMonths((prev) => {
+            const next = new Set(prev);
+            if (next.has(month)) {
+                next.delete(month);
+            } else {
+                next.add(month);
+            }
+            return next;
+        });
+    };
+
     const formatDate = (dateStr: string) => {
         const date = new Date(dateStr);
         return date.toLocaleDateString("ja-JP", {
-            year: "numeric",
-            month: "long",
+            month: "short",
             day: "numeric",
             weekday: "short",
         });
@@ -126,6 +179,11 @@ export default function DiaryPage() {
 
     const getMoodInfo = (mood: string | null) => {
         return MOODS.find(m => m.value === mood) || null;
+    };
+
+    const truncateText = (text: string, maxLength: number = 60) => {
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + "...";
     };
 
     if (status === "loading" || isLoading) {
@@ -154,6 +212,7 @@ export default function DiaryPage() {
                         </svg>
                     </Link>
                     <h1 className="text-white font-bold text-lg">日記</h1>
+                    <span className="text-white/40 text-sm ml-auto">{entries.length}件</span>
                 </div>
             </header>
 
@@ -188,8 +247,8 @@ export default function DiaryPage() {
                                         key={mood.value}
                                         onClick={() => setSelectedMood(selectedMood === mood.value ? null : mood.value)}
                                         className={`px-3 py-1.5 rounded-full text-sm transition-all ${selectedMood === mood.value
-                                                ? mood.color + " ring-2 ring-white/30"
-                                                : "bg-white/5 text-white/60 hover:bg-white/10"
+                                            ? mood.color + " ring-2 ring-white/30"
+                                            : "bg-white/5 text-white/60 hover:bg-white/10"
                                             }`}
                                     >
                                         {mood.label}
@@ -248,7 +307,7 @@ export default function DiaryPage() {
                     </div>
                 )}
 
-                {/* 日記一覧 */}
+                {/* 日記一覧（月別グループ） */}
                 {entries.length === 0 ? (
                     <div className="text-center py-12">
                         <div className="text-4xl mb-3">📔</div>
@@ -257,45 +316,122 @@ export default function DiaryPage() {
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        {entries.map((entry) => {
-                            const moodInfo = getMoodInfo(entry.mood);
+                        {sortedMonths.map((month) => {
+                            const monthEntries = groupedEntries[month];
+                            const isCollapsed = collapsedMonths.has(month);
+
                             return (
-                                <div key={entry.id} className="card-dark p-4 border border-white/10">
-                                    {/* ヘッダー */}
-                                    <div className="flex items-center justify-between mb-3">
+                                <div key={month} className="space-y-2">
+                                    {/* 月ヘッダー */}
+                                    <button
+                                        onClick={() => toggleMonthCollapsed(month)}
+                                        className="w-full flex items-center justify-between px-3 py-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                                    >
                                         <div className="flex items-center gap-2">
-                                            <span className="text-white/40 text-sm">{formatDate(entry.createdAt)}</span>
-                                            <span className="text-white/20 text-xs">{formatTime(entry.createdAt)}</span>
+                                            <span className="text-white font-medium">{month}</span>
+                                            <span className="text-white/40 text-sm">{monthEntries.length}件</span>
                                         </div>
-                                        {moodInfo && (
-                                            <span className={`px-2 py-0.5 rounded-full text-xs ${moodInfo.color}`}>
-                                                {moodInfo.label}
-                                            </span>
-                                        )}
-                                    </div>
+                                        <svg
+                                            className={`w-4 h-4 text-white/40 transition-transform ${isCollapsed ? "" : "rotate-180"}`}
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
 
-                                    {/* 本文 */}
-                                    <p className="text-white whitespace-pre-wrap mb-3">{entry.content}</p>
+                                    {/* 日記エントリー */}
+                                    {!isCollapsed && (
+                                        <div className="space-y-2 pl-2">
+                                            {monthEntries.map((entry) => {
+                                                const moodInfo = getMoodInfo(entry.mood);
+                                                const isExpanded = expandedEntries.has(entry.id);
 
-                                    {/* AIインサイト */}
-                                    {entry.aiInsight && (
-                                        <div className="bg-pink-500/10 rounded-xl p-3 border border-pink-500/20">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="text-pink-400 text-sm font-medium">💬 恋愛マスターより</span>
-                                            </div>
-                                            <p className="text-white/80 text-sm">{entry.aiInsight}</p>
+                                                return (
+                                                    <div
+                                                        key={entry.id}
+                                                        className="card-dark border border-white/10 overflow-hidden"
+                                                    >
+                                                        {/* 折りたたみヘッダー */}
+                                                        <button
+                                                            onClick={() => toggleEntryExpanded(entry.id)}
+                                                            className="w-full p-3 text-left hover:bg-white/5 transition-colors"
+                                                        >
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex items-center gap-2 flex-1 min-w-0">
+                                                                    <span className="text-white/50 text-sm shrink-0">
+                                                                        {formatDate(entry.createdAt)}
+                                                                    </span>
+                                                                    {moodInfo && (
+                                                                        <span className="text-sm shrink-0">
+                                                                            {moodInfo.label.split(" ")[0]}
+                                                                        </span>
+                                                                    )}
+                                                                    {!isExpanded && (
+                                                                        <span className="text-white/40 text-sm truncate">
+                                                                            {truncateText(entry.content)}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                <svg
+                                                                    className={`w-4 h-4 text-white/30 shrink-0 ml-2 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                                </svg>
+                                                            </div>
+                                                        </button>
+
+                                                        {/* 展開時のコンテンツ */}
+                                                        {isExpanded && (
+                                                            <div className="px-3 pb-3 space-y-3">
+                                                                {/* 時刻と気分 */}
+                                                                <div className="flex items-center gap-2 text-white/40 text-xs">
+                                                                    <span>{formatTime(entry.createdAt)}</span>
+                                                                    {moodInfo && (
+                                                                        <span className={`px-2 py-0.5 rounded-full ${moodInfo.color}`}>
+                                                                            {moodInfo.label}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+
+                                                                {/* 本文 */}
+                                                                <p className="text-white whitespace-pre-wrap text-sm">
+                                                                    {entry.content}
+                                                                </p>
+
+                                                                {/* AIインサイト */}
+                                                                {entry.aiInsight && (
+                                                                    <div className="bg-pink-500/10 rounded-xl p-3 border border-pink-500/20">
+                                                                        <div className="flex items-center gap-2 mb-1">
+                                                                            <span className="text-pink-400 text-xs font-medium">💬 恋愛マスターより</span>
+                                                                        </div>
+                                                                        <p className="text-white/80 text-sm">{entry.aiInsight}</p>
+                                                                    </div>
+                                                                )}
+
+                                                                {/* 削除ボタン */}
+                                                                <div className="flex justify-end pt-1">
+                                                                    <button
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleDelete(entry.id);
+                                                                        }}
+                                                                        className="text-white/30 hover:text-red-400 text-xs transition-colors"
+                                                                    >
+                                                                        削除
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     )}
-
-                                    {/* 削除ボタン */}
-                                    <div className="flex justify-end mt-3">
-                                        <button
-                                            onClick={() => handleDelete(entry.id)}
-                                            className="text-white/30 hover:text-red-400 text-xs transition-colors"
-                                        >
-                                            削除
-                                        </button>
-                                    </div>
                                 </div>
                             );
                         })}
