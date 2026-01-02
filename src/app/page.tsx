@@ -154,14 +154,6 @@ export default function Home() {
           <StatsGrid />
         </section>
 
-        {/* クイックログボタン */}
-        <section className="mb-7 animate-fadeInUp-delay-3">
-          <h3 className="text-white/70 text-sm font-medium mb-4 flex items-center gap-2">
-            <span className="text-lg">⚡</span> 爆速記録
-          </h3>
-          <QuickLogGrid onLogClick={handleQuickLogClick} />
-        </section>
-
         {/* 次のイベントリマインダー */}
         <section className="mb-6">
           <div className="glass rounded-2xl p-4 border border-white/5">
@@ -180,17 +172,33 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 最近の記録 */}
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-white/60 text-xs font-medium flex items-center gap-2">
-              <span>📝</span> 最近の記録
-            </h3>
-            <button className="text-xs text-white/40 hover:text-white/60 transition-colors">
-              すべて見る →
-            </button>
-          </div>
-          <RecordsList records={recentRecords} />
+        {/* 今日の日記を書く */}
+        <section className="mb-7">
+          <Link
+            href="/diary"
+            className="block glass rounded-2xl p-4 border border-pink-500/20 hover:border-pink-500/40 transition-all hover:bg-white/5"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-pink-500/20 flex items-center justify-center">
+                <span className="text-2xl">📝</span>
+              </div>
+              <div>
+                <p className="text-white font-medium">今日の日記を書く</p>
+                <p className="text-white/50 text-sm">パートナーとの思い出を記録しよう</p>
+              </div>
+              <svg className="w-5 h-5 text-white/30 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Link>
+        </section>
+
+        {/* クイックログボタン */}
+        <section className="mb-7 animate-fadeInUp-delay-3">
+          <h3 className="text-white/70 text-sm font-medium mb-4 flex items-center gap-2">
+            <span className="text-lg">⚡</span> 爆速記録
+          </h3>
+          <QuickLogGrid onLogClick={handleQuickLogClick} />
         </section>
       </main>
 
@@ -200,7 +208,6 @@ export default function Home() {
           <div className="flex items-center justify-around py-2">
             <NavItem href="/" icon="/nav-home.png" label="ホーム" active />
             <NavItem href="/records" icon="/nav-records.png" label="記録" />
-            <NavItem href="/diary" icon="📔" label="日記" />
             <NavItem href="/mine-checker" icon="/nav-danger.png" label="地雷" />
             <NavItem href="/master" icon="/nav-master.png" label="マスター" />
             <NavItem href="/settings" icon="/nav-settings.png" label="設定" />

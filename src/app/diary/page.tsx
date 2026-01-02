@@ -270,8 +270,8 @@ export default function DiaryPage() {
                         <button
                             onClick={() => setFilterMood(null)}
                             className={`px-3 py-1 rounded-full text-xs whitespace-nowrap transition-all ${filterMood === null
-                                    ? "bg-white/20 text-white"
-                                    : "bg-white/5 text-white/50 hover:bg-white/10"
+                                ? "bg-white/20 text-white"
+                                : "bg-white/5 text-white/50 hover:bg-white/10"
                                 }`}
                         >
                             すべて
@@ -281,8 +281,8 @@ export default function DiaryPage() {
                                 key={mood.value}
                                 onClick={() => setFilterMood(filterMood === mood.value ? null : mood.value)}
                                 className={`px-3 py-1 rounded-full text-xs whitespace-nowrap transition-all ${filterMood === mood.value
-                                        ? mood.color + " ring-1 ring-white/30"
-                                        : "bg-white/5 text-white/50 hover:bg-white/10"
+                                    ? mood.color + " ring-1 ring-white/30"
+                                    : "bg-white/5 text-white/50 hover:bg-white/10"
                                     }`}
                             >
                                 {mood.emoji} {mood.label.split(" ")[1]}
@@ -544,7 +544,6 @@ export default function DiaryPage() {
                 <div className="max-w-lg mx-auto px-4 py-2 flex justify-around">
                     <NavItem href="/" icon="/nav-home.png" label="ホーム" />
                     <NavItem href="/records" icon="/nav-records.png" label="記録" />
-                    <NavItem href="/diary" icon="📔" label="日記" active />
                     <NavItem href="/mine-checker" icon="/nav-danger.png" label="地雷" />
                     <NavItem href="/master" icon="/nav-master.png" label="マスター" />
                     <NavItem href="/settings" icon="/nav-settings.png" label="設定" />

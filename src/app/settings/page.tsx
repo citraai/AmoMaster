@@ -324,7 +324,6 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-around py-3">
                         <NavItem href="/" icon="/nav-home.png" label="ホーム" />
                         <NavItem href="/records" icon="/nav-records.png" label="記録" />
-                        <NavItem href="/diary" icon="📔" label="日記" />
                         <NavItem href="/mine-checker" icon="/nav-danger.png" label="地雷" />
                         <NavItem href="/master" icon="/nav-master.png" label="マスター" />
                         <NavItem href="/settings" icon="/nav-settings.png" label="設定" active />
