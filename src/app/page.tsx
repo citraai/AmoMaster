@@ -154,22 +154,12 @@ export default function Home() {
           <StatsGrid />
         </section>
 
-        {/* 次のイベントリマインダー */}
-        <section className="mb-6">
-          <div className="glass rounded-2xl p-4 border border-white/5">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-white/60 text-xs font-medium flex items-center gap-2">
-                <span>📅</span> 次の重要イベント
-              </h3>
-              <button
-                onClick={() => setIsEventModalOpen(true)}
-                className="text-xs text-white/40 hover:text-white/60 transition-colors"
-              >
-                + 追加
-              </button>
-            </div>
-            <EventsList events={upcomingEvents} />
-          </div>
+        {/* クイックログボタン */}
+        <section className="mb-7 animate-fadeInUp-delay-3">
+          <h3 className="text-white/70 text-sm font-medium mb-4 flex items-center gap-2">
+            <span className="text-lg">⚡</span> 爆速記録
+          </h3>
+          <QuickLogGrid onLogClick={handleQuickLogClick} />
         </section>
 
         {/* 今日の日記を書く */}
@@ -193,12 +183,22 @@ export default function Home() {
           </Link>
         </section>
 
-        {/* クイックログボタン */}
-        <section className="mb-7 animate-fadeInUp-delay-3">
-          <h3 className="text-white/70 text-sm font-medium mb-4 flex items-center gap-2">
-            <span className="text-lg">⚡</span> 爆速記録
-          </h3>
-          <QuickLogGrid onLogClick={handleQuickLogClick} />
+        {/* 次のイベントリマインダー */}
+        <section className="mb-6">
+          <div className="glass rounded-2xl p-4 border border-white/5">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-white/60 text-xs font-medium flex items-center gap-2">
+                <span>📅</span> 次の重要イベント
+              </h3>
+              <button
+                onClick={() => setIsEventModalOpen(true)}
+                className="text-xs text-white/40 hover:text-white/60 transition-colors"
+              >
+                + 追加
+              </button>
+            </div>
+            <EventsList events={upcomingEvents} />
+          </div>
         </section>
       </main>
 
