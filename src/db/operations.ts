@@ -384,16 +384,42 @@ export async function getAllUserData(userId: string) {
 
 // ==================== アカウント削除 ====================
 
-export async function deleteUserAccount(userId: string): Promise<void> {
+export async function deleteUserAccount(userId: string): Promise<{ success: boolean; deletedTables: string[] }> {
     const db = await getDb();
-    // すべての関連データを削除
-    await db.delete(preferences).where(eq(preferences.userId, userId));
-    await db.delete(quotes).where(eq(quotes.userId, userId));
-    await db.delete(events).where(eq(events.userId, userId));
-    await db.delete(settings).where(eq(settings.userId, userId));
-    await db.delete(userProgress).where(eq(userProgress.userId, userId));
-    // 最後にユーザー自体を削除
-    await db.delete(users).where(eq(users.id, userId));
+    const deletedTables: string[] = [];
+
+    try {
+        // すべての関連データを削除
+        await db.delete(preferences).where(eq(preferences.userId, userId));
+        deletedTables.push("preferences");
+
+        await db.delete(quotes).where(eq(quotes.userId, userId));
+        deletedTables.push("quotes");
+
+        await db.delete(events).where(eq(events.userId, userId));
+        deletedTables.push("events");
+
+        await db.delete(settings).where(eq(settings.userId, userId));
+        deletedTables.push("settings");
+
+        await db.delete(userProgress).where(eq(userProgress.userId, userId));
+        deletedTables.push("userProgress");
+
+        await db.delete(diaryEntries).where(eq(diaryEntries.userId, userId));
+        deletedTables.push("diaryEntries");
+
+        await db.delete(feedback).where(eq(feedback.userId, userId));
+        deletedTables.push("feedback");
+
+        // 最後にユーザー自体を削除
+        await db.delete(users).where(eq(users.id, userId));
+        deletedTables.push("users");
+
+        return { success: true, deletedTables };
+    } catch (error) {
+        console.error("[deleteUserAccount] Error:", error);
+        return { success: false, deletedTables };
+    }
 }
 
 // ==================== Feedback ====================
