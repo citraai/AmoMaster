@@ -87,9 +87,9 @@ export default function PrivacyPage() {
                             AIアドバイザー機能（GPT-4o-mini）のために利用しています。ユーザーの記録情報がAI処理のために送信されますが、OpenAI社による情報の保存期間はOpenAI社のプライバシーポリシーに従います。
                         </p>
 
-                        <h3 className="text-white font-medium mt-4 mb-2">5.2 Turso Database</h3>
+                        <h3 className="text-white font-medium mt-4 mb-2">5.2 Cloudflare D1</h3>
                         <p className="text-white/70">
-                            ユーザーデータの保存に利用しています。データは暗号化された通信で送受信されます。
+                            ユーザーデータの保存に利用しています。Cloudflare D1はCloudflareのエッジデータベースであり、データは暗号化された通信で送受信されます。
                         </p>
 
                         <h3 className="text-white font-medium mt-4 mb-2">5.3 Cloudflare</h3>
