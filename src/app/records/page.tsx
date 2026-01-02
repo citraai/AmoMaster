@@ -43,11 +43,9 @@ export default function RecordsPage() {
             {/* メインコンテンツ */}
             <main className="flex-1 flex flex-col items-center justify-center px-6 pb-24">
                 {/* キャラクターセクション */}
-                <div className={`flex items-end justify-center gap-2 mb-8 transition-all duration-700 ${isAnimating ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+                <div className={`flex items-end justify-center gap-0 mb-6 transition-all duration-700 ${isAnimating ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
                     {/* 魔法使いキャラ */}
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-400/30 to-purple-500/30 border-2 border-white/20 flex items-center justify-center shadow-lg overflow-hidden">
-                        <img src="/char-wizard.png" alt="魔法使い" className="w-full h-full object-cover" />
-                    </div>
+                    <img src="/char-wizard.png" alt="魔法使い" className="w-28 h-28 object-contain -mr-2" />
 
                     {/* 吹き出し */}
                     <div className={`relative bg-white/90 rounded-2xl px-4 py-3 shadow-lg max-w-[180px] transition-all duration-700 delay-200 ${isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
@@ -59,9 +57,7 @@ export default function RecordsPage() {
                     </div>
 
                     {/* 妖精キャラ */}
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-pink-300/30 to-rose-400/30 border-2 border-white/20 flex items-center justify-center shadow-lg overflow-hidden">
-                        <img src="/char-fairy.png" alt="妖精" className="w-full h-full object-cover" />
-                    </div>
+                    <img src="/char-fairy.png" alt="妖精" className="w-28 h-28 object-contain -ml-2" />
                 </div>
 
                 {/* ボタンセクション */}
