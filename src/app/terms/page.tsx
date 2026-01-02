@@ -27,7 +27,7 @@ export default function TermsPage() {
             <main className="max-w-2xl mx-auto px-4 py-6 pb-24">
                 <div className="glass rounded-2xl p-6 border border-white/5 space-y-6 text-white/80 text-sm leading-relaxed">
                     <section>
-                        <p className="text-white/50 text-xs mb-4">最終更新日: 2024年12月31日</p>
+                        <p className="text-white/50 text-xs mb-4">最終更新日: 2025年1月2日</p>
                     </section>
 
                     <section>
@@ -44,8 +44,8 @@ export default function TermsPage() {
                             <li>パートナーの好み・NG情報の記録機能</li>
                             <li>名言・エピソードの記録機能</li>
                             <li>イベント・記念日の管理機能</li>
+                            <li>日記機能</li>
                             <li>AIアドバイザーによるアドバイス機能</li>
-                            <li>デイリーミッション機能</li>
                         </ul>
                     </section>
 
@@ -104,14 +104,29 @@ export default function TermsPage() {
                     </section>
 
                     <section>
-                        <h2 className="text-white font-semibold text-lg mb-3">第8条（利用規約の変更）</h2>
+                        <h2 className="text-white font-semibold text-lg mb-3">第8条（損害賠償の制限）</h2>
+                        <p>
+                            万が一、運営者がユーザーに対して損害賠償責任を負う場合であっても、その賠償額は、当該ユーザーが本アプリの利用に関して運営者に支払った金額を上限とします。本アプリが無料で提供されている場合、運営者は一切の損害賠償責任を負いません。
+                        </p>
+                    </section>
+
+                    <section>
+                        <h2 className="text-white font-semibold text-lg mb-3">第9条（知的財産権）</h2>
+                        <ol className="list-decimal list-inside space-y-2 text-white/70">
+                            <li>本アプリおよび本アプリに関連する一切のコンテンツ（テキスト、画像、デザイン、ソースコード、アイコン、キャラクター等）に関する知的財産権は、運営者または正当な権利者に帰属します。</li>
+                            <li>ユーザーは、運営者の事前の書面による承諾なく、本アプリのコンテンツを複製、転載、改変、販売、その他二次利用することはできません。</li>
+                        </ol>
+                    </section>
+
+                    <section>
+                        <h2 className="text-white font-semibold text-lg mb-3">第10条（利用規約の変更）</h2>
                         <p>
                             運営者は、必要と判断した場合には、ユーザーに通知することなく本規約を変更することができるものとします。変更後の利用規約は、本アプリ上に表示した時点から効力を生じるものとします。
                         </p>
                     </section>
 
                     <section>
-                        <h2 className="text-white font-semibold text-lg mb-3">第9条（準拠法・裁判管轄）</h2>
+                        <h2 className="text-white font-semibold text-lg mb-3">第11条（準拠法・裁判管轄）</h2>
                         <p>
                             本規約の解釈にあたっては、日本法を準拠法とします。本アプリに関して紛争が生じた場合には、運営者の所在地を管轄する裁判所を専属的合意管轄とします。
                         </p>

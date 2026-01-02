@@ -27,7 +27,7 @@ export default function PrivacyPage() {
             <main className="max-w-2xl mx-auto px-4 py-6 pb-24">
                 <div className="glass rounded-2xl p-6 border border-white/5 space-y-6 text-white/80 text-sm leading-relaxed">
                     <section>
-                        <p className="text-white/50 text-xs mb-4">最終更新日: 2024年12月31日</p>
+                        <p className="text-white/50 text-xs mb-4">最終更新日: 2025年1月2日</p>
                     </section>
 
                     <section>
@@ -92,9 +92,9 @@ export default function PrivacyPage() {
                             ユーザーデータの保存に利用しています。データは暗号化された通信で送受信されます。
                         </p>
 
-                        <h3 className="text-white font-medium mt-4 mb-2">5.3 Vercel</h3>
+                        <h3 className="text-white font-medium mt-4 mb-2">5.3 Cloudflare</h3>
                         <p className="text-white/70">
-                            アプリケーションのホスティングに利用しています。
+                            アプリケーションのホスティングに利用しています。Cloudflare PagesおよびCloudflare Workersを使用し、データはエッジロケーションで処理されます。
                         </p>
                     </section>
 
