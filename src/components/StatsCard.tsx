@@ -42,18 +42,30 @@ export function StatsGrid() {
                     dataService.getQuotes(),
                 ]);
 
-                // 今月の記録数を計算
+                // 日記データも取得
+                let diaries: { createdAt: string }[] = [];
+                try {
+                    const diaryRes = await fetch("/api/diary");
+                    if (diaryRes.ok) {
+                        diaries = await diaryRes.json();
+                    }
+                } catch {
+                    // 日記取得エラーは無視
+                }
+
+                // 今月の記録数を計算（日記も含む）
                 const now = new Date();
                 const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
-                const monthlyRecords = [...prefs, ...quotes].filter((r: { createdAt: string }) =>
+                const allRecords = [...prefs, ...quotes, ...diaries];
+                const monthlyRecords = allRecords.filter((r: { createdAt: string }) =>
                     r.createdAt.startsWith(thisMonth)
                 );
                 setMonthlyCount(monthlyRecords.length);
 
-                // 連続日数を計算（簡易版）
+                // 連続日数を計算（日記も含む）
                 const today = now.toISOString().split("T")[0];
-                const hasRecordToday = [...prefs, ...quotes].some((r: { createdAt: string }) =>
+                const hasRecordToday = allRecords.some((r: { createdAt: string }) =>
                     r.createdAt.startsWith(today)
                 );
                 setConsecutiveDays(hasRecordToday ? 1 : 0);
