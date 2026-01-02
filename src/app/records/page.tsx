@@ -43,19 +43,23 @@ export default function RecordsPage() {
             {/* メインコンテンツ */}
             <main className="flex-1 flex flex-col items-center justify-center px-6 pb-24">
                 {/* キャラクターセクション */}
-                <div className={`flex items-end justify-center gap-0 mb-2 transition-all duration-700 ${isAnimating ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+                <div className={`flex items-center justify-center gap-4 mb-4 transition-all duration-700 ${isAnimating ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
                     {/* 魔法使いキャラ */}
-                    <img src="/char-wizard.png" alt="魔法使い" className="w-36 h-36 object-contain scale-150 origin-bottom" />
+                    <div className="w-24 h-24 flex items-center justify-center overflow-visible">
+                        <img src="/char-wizard.png" alt="魔法使い" className="w-full h-full object-contain" style={{ transform: 'scale(3)' }} />
+                    </div>
 
                     {/* 吹き出し */}
-                    <div className={`relative bg-white/90 rounded-2xl px-4 py-3 shadow-lg z-10 transition-all duration-700 delay-200 ${isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
+                    <div className={`relative bg-white/95 rounded-2xl px-5 py-4 shadow-lg z-20 transition-all duration-700 delay-200 ${isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
                         <p className="text-gray-700 text-sm text-center font-medium leading-relaxed whitespace-nowrap">
                             今日はどんな<br />素敵なことが<br />あったの？
                         </p>
                     </div>
 
                     {/* 妖精キャラ */}
-                    <img src="/char-fairy.png" alt="妖精" className="w-36 h-36 object-contain scale-150 origin-bottom" />
+                    <div className="w-24 h-24 flex items-center justify-center overflow-visible">
+                        <img src="/char-fairy.png" alt="妖精" className="w-full h-full object-contain" style={{ transform: 'scale(3)' }} />
+                    </div>
                 </div>
 
                 {/* ボタンセクション */}
