@@ -7,6 +7,9 @@ import { auth } from "@/lib/auth";
 import * as dbOps from "@/db/operations";
 import OpenAI from "openai";
 
+// Cloudflare Pages用Edge Runtime
+export const runtime = 'edge';
+
 // 日記分析用のシステムプロンプト
 const DIARY_INSIGHT_PROMPT = `あなたは「恋愛マスター」です。ユーザーの日記を読んで、パートナーとの関係に関する短い分析・アドバイスを提供します。
 
