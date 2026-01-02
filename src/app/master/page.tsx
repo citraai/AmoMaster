@@ -44,12 +44,12 @@ export default function MasterPage() {
 
             // AI使用状況を取得
             try {
-                console.log("[DEBUG] Fetching usage info...");
+
                 const res = await fetch("/api/ai/usage");
-                console.log("[DEBUG] Usage API response status:", res.status);
+
                 if (res.ok) {
                     const data = await res.json();
-                    console.log("[DEBUG] Usage data:", data);
+
                     setUsageInfo(data);
                 } else {
                     const errorText = await res.text();

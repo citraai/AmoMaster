@@ -19,7 +19,7 @@ function getApiKey(): string | null {
  */
 export function isApiAvailable(): boolean {
     const hasKey = !!getApiKey();
-    console.log("[DEBUG] OpenAI API Key:", hasKey ? "Found" : "Not Found");
+
     return hasKey;
 }
 
@@ -45,7 +45,7 @@ export async function generateWithApi(
             });
         }
 
-        console.log("[DEBUG] Calling OpenAI API with gpt-4o-mini");
+
 
         const response = await openai.chat.completions.create({
             model: "gpt-4o-mini",
@@ -60,7 +60,7 @@ export async function generateWithApi(
         const text = response.choices[0]?.message?.content;
 
         if (text) {
-            console.log("[DEBUG] ✅ OpenAI API success");
+
             return text;
         }
 

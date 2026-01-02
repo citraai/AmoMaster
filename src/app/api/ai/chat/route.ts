@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
             apiKey: apiKey,
         });
 
-        console.log("[AI Chat] Calling OpenAI API...");
+
 
         const response = await openai.chat.completions.create({
             model: "gpt-4o-mini",
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         const text = response.choices[0]?.message?.content;
 
         if (text) {
-            console.log("[AI Chat] ✅ Success");
+
             return NextResponse.json({ response: text });
         }
 

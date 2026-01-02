@@ -21,7 +21,7 @@ interface AIResponse {
  */
 async function callServerApi(prompt: string, systemPrompt: string): Promise<string | null> {
     try {
-        console.log("[DEBUG] Calling server-side AI API...");
+
         const response = await fetch("/api/ai/chat", {
             method: "POST",
             headers: {
@@ -37,7 +37,7 @@ async function callServerApi(prompt: string, systemPrompt: string): Promise<stri
         }
 
         const data = await response.json();
-        console.log("[DEBUG] ✅ Server API success");
+
         return data.response;
     } catch (error) {
         console.error("[DEBUG] ❌ Server API call failed:", error);
@@ -49,16 +49,16 @@ async function callServerApi(prompt: string, systemPrompt: string): Promise<stri
  * 利用可能なAIプロバイダーを検出
  */
 export async function detectProvider(): Promise<AIProvider> {
-    console.log("[DEBUG] Detecting AI Provider...");
+
 
     // 1. Gemini Nano（ローカル）を優先
     if (await isNanoAvailable()) {
-        console.log("[DEBUG] Provider: Nano");
+
         return "nano";
     }
 
     // 2. サーバーサイドAPI（常に利用可能として扱う）
-    console.log("[DEBUG] Provider: API (server-side)");
+
     return "api";
 }
 
@@ -84,7 +84,7 @@ export async function sendMessage(userMessage: string, partnerNickname?: string)
 
     // RAGコンテキストを構築（DBから非同期で取得）
     const ragContext = await buildRagContextAsync(userMessage);
-    console.log("[DEBUG] RAG Context:", ragContext);
+
 
     // パートナーの呼び方を含めたシステムプロンプトを生成
     const systemPrompt = getMasterSystemPrompt(partnerNickname);

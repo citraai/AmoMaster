@@ -15,7 +15,7 @@ const SETTINGS_KEY = "herspecialist_settings";
 // ==================== Turso DB同期ヘルパー（API経由） ====================
 
 async function syncToDb(action: string, data: any): Promise<void> {
-    console.log("[Sync] Starting sync...", action);
+
 
     try {
         const response = await fetch("/api/sync", {
@@ -25,7 +25,7 @@ async function syncToDb(action: string, data: any): Promise<void> {
         });
 
         if (response.ok) {
-            console.log("[Sync] ✅ Synced to Turso DB");
+
         } else {
             const errorText = await response.text();
             console.warn("[Sync] ⚠️ Failed to sync to Turso DB:", errorText);

@@ -21,7 +21,7 @@ function getApiKey(): string | null {
  */
 export function isApiAvailable(): boolean {
     const hasKey = !!getApiKey();
-    console.log("[DEBUG] Gemini API Key:", hasKey ? "Found" : "Not Found");
+
     return hasKey;
 }
 
@@ -54,7 +54,7 @@ export async function generateWithApi(
 
         for (const modelName of modelNames) {
             try {
-                console.log(`[DEBUG] Trying model: ${modelName}`);
+
                 const model = genAI.getGenerativeModel({ model: modelName });
 
                 // プロンプトを構築
@@ -67,7 +67,7 @@ export async function generateWithApi(
                 const text = response.text();
 
                 if (text) {
-                    console.log(`[DEBUG] ✅ Success with model: ${modelName}`);
+
                     return text;
                 }
             } catch (error: any) {
