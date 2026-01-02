@@ -245,23 +245,14 @@ export default function DiaryPage() {
                     <h1 className="text-white font-bold text-lg">📔 日記</h1>
                     <span className="text-white/40 text-sm">{filteredEntries.length}件</span>
 
-                    {/* 日付フィルター */}
-                    <div className="ml-auto flex items-center gap-2">
-                        <input
-                            type="date"
-                            value={filterDate}
-                            onChange={(e) => setFilterDate(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-white text-xs focus:outline-none focus:ring-2 focus:ring-pink-500/50 w-28"
-                        />
-                        {hasActiveFilters && (
-                            <button
-                                onClick={clearFilters}
-                                className="text-pink-400 text-xs hover:underline"
-                            >
-                                解除
-                            </button>
-                        )}
-                    </div>
+                    {hasActiveFilters && (
+                        <button
+                            onClick={clearFilters}
+                            className="ml-auto text-pink-400 text-xs px-2 py-1 bg-pink-500/20 rounded-full hover:bg-pink-500/30"
+                        >
+                            ✕ 解除
+                        </button>
+                    )}
                 </div>
 
                 {/* 感情フィルターバー - 常に表示 */}
