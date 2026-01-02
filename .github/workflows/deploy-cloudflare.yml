@@ -3,7 +3,8 @@ name: Deploy to Cloudflare Pages
 on:
   push:
     branches:
-      - cloudflare-test  # このブランチにプッシュしたらデプロイ
+      - main  # メインブランチ
+      - cloudflare-test  # テスト用ブランチ
 
 jobs:
   deploy:
