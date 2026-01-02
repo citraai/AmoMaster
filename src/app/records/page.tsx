@@ -45,17 +45,17 @@ export default function RecordsPage() {
                 {/* キャラクターセクション */}
                 <div className={`flex items-end justify-center gap-0 mb-4 transition-all duration-700 ${isAnimating ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
                     {/* 魔法使いキャラ */}
-                    <img src="/char-wizard.png" alt="魔法使い" className="w-40 h-40 object-contain" />
+                    <img src="/char-wizard.png" alt="魔法使い" className="w-48 h-48 object-contain" />
 
                     {/* 吹き出し */}
-                    <div className={`relative bg-white/90 rounded-2xl px-4 py-3 shadow-lg max-w-[160px] -ml-4 -mr-4 mb-8 transition-all duration-700 delay-200 ${isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
+                    <div className={`relative bg-white/90 rounded-2xl px-4 py-3 shadow-lg -ml-10 -mr-10 mb-16 transition-all duration-700 delay-200 ${isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
                         <p className="text-gray-700 text-sm text-center font-medium leading-relaxed">
                             今日はどんな<br />素敵なことが<br />あったの？
                         </p>
                     </div>
 
                     {/* 妖精キャラ */}
-                    <img src="/char-fairy.png" alt="妖精" className="w-40 h-40 object-contain" />
+                    <img src="/char-fairy.png" alt="妖精" className="w-48 h-48 object-contain" />
                 </div>
 
                 {/* ボタンセクション */}
