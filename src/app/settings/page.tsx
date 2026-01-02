@@ -35,7 +35,9 @@ export default function SettingsPage() {
             if (status !== "authenticated") return;
             try {
                 const settings = await dataService.getSettings();
-                setPartnerName(settings.partnerName || "パートナー");
+                if (settings && settings.partnerName) {
+                    setPartnerName(settings.partnerName);
+                }
             } catch (error) {
                 console.error("設定読み込みエラー:", error);
             } finally {
