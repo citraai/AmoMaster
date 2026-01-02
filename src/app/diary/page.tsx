@@ -256,7 +256,7 @@ export default function DiaryPage() {
                 </div>
 
                 {/* 感情フィルターバー - 常に表示 */}
-                <div className="max-w-lg mx-auto px-4 pb-3">
+                <div className="max-w-lg mx-auto px-4 pb-2">
                     <div className="flex gap-1.5 overflow-x-auto py-1 scrollbar-hide">
                         <button
                             onClick={() => setFilterMood(null)}
@@ -279,6 +279,27 @@ export default function DiaryPage() {
                                 {mood.emoji} {mood.label.split(" ")[1]}
                             </button>
                         ))}
+                    </div>
+                </div>
+
+                {/* 日付フィルター */}
+                <div className="max-w-lg mx-auto px-4 pb-3">
+                    <div className="flex items-center gap-2">
+                        <span className="text-white/40 text-xs">📅</span>
+                        <input
+                            type="date"
+                            value={filterDate}
+                            onChange={(e) => setFilterDate(e.target.value)}
+                            className="bg-white/10 border border-white/20 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/50"
+                        />
+                        {filterDate && (
+                            <button
+                                onClick={() => setFilterDate("")}
+                                className="text-pink-400 text-xs px-2 py-1 bg-pink-500/20 rounded-full"
+                            >
+                                ✕
+                            </button>
+                        )}
                     </div>
                 </div>
             </header>
