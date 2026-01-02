@@ -101,11 +101,17 @@ export default function RecordsPage() {
                     </Link>
                 </div>
 
-                {/* 装飾の星 */}
-                <div className={`absolute top-20 left-8 text-pink-300/40 text-lg transition-all duration-1000 ${isAnimating ? "opacity-100" : "opacity-0"}`}>✦</div>
-                <div className={`absolute top-32 right-12 text-yellow-300/40 text-sm transition-all duration-1000 delay-200 ${isAnimating ? "opacity-100" : "opacity-0"}`}>✦</div>
-                <div className={`absolute bottom-40 left-16 text-purple-300/40 text-xl transition-all duration-1000 delay-300 ${isAnimating ? "opacity-100" : "opacity-0"}`}>✦</div>
-                <div className={`absolute bottom-52 right-8 text-pink-300/40 text-xs transition-all duration-1000 delay-500 ${isAnimating ? "opacity-100" : "opacity-0"}`}>✦</div>
+                {/* 装飾のハートと星 */}
+                <div className={`absolute top-16 left-6 text-pink-400/50 text-xl transition-all duration-1000 ${isAnimating ? "opacity-100" : "opacity-0"}`}>♥</div>
+                <div className={`absolute top-24 right-8 text-yellow-400/40 text-lg transition-all duration-1000 delay-100 ${isAnimating ? "opacity-100" : "opacity-0"}`}>✦</div>
+                <div className={`absolute top-40 left-12 text-purple-400/40 text-sm transition-all duration-1000 delay-200 ${isAnimating ? "opacity-100" : "opacity-0"}`}>✦</div>
+                <div className={`absolute top-28 right-20 text-pink-300/40 text-xs transition-all duration-1000 delay-300 ${isAnimating ? "opacity-100" : "opacity-0"}`}>♥</div>
+                <div className={`absolute top-48 right-6 text-rose-400/40 text-sm transition-all duration-1000 delay-400 ${isAnimating ? "opacity-100" : "opacity-0"}`}>♥</div>
+                <div className={`absolute bottom-36 left-8 text-pink-400/50 text-lg transition-all duration-1000 delay-500 ${isAnimating ? "opacity-100" : "opacity-0"}`}>✦</div>
+                <div className={`absolute bottom-44 right-10 text-yellow-300/50 text-xl transition-all duration-1000 delay-600 ${isAnimating ? "opacity-100" : "opacity-0"}`}>♥</div>
+                <div className={`absolute bottom-52 left-16 text-purple-300/40 text-xs transition-all duration-1000 delay-700 ${isAnimating ? "opacity-100" : "opacity-0"}`}>✦</div>
+                <div className={`absolute bottom-32 right-20 text-pink-300/40 text-sm transition-all duration-1000 delay-800 ${isAnimating ? "opacity-100" : "opacity-0"}`}>✦</div>
+                <div className={`absolute top-60 left-4 text-rose-300/30 text-xs transition-all duration-1000 delay-900 ${isAnimating ? "opacity-100" : "opacity-0"}`}>♥</div>
             </main>
 
             {/* ボトムナビゲーション */}
