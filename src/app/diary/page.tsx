@@ -7,14 +7,14 @@ import Link from "next/link";
 
 // 感情の選択肢
 const MOODS = [
-    { value: "happy", label: "😊 嬉しい", color: "bg-yellow-500/20 text-yellow-400" },
-    { value: "peaceful", label: "😌 穏やか", color: "bg-green-500/20 text-green-400" },
-    { value: "excited", label: "🤩 ワクワク", color: "bg-pink-500/20 text-pink-400" },
-    { value: "tired", label: "😴 疲れた", color: "bg-blue-500/20 text-blue-400" },
-    { value: "sad", label: "😢 悲しい", color: "bg-indigo-500/20 text-indigo-400" },
-    { value: "anxious", label: "😰 不安", color: "bg-purple-500/20 text-purple-400" },
-    { value: "angry", label: "😠 怒り", color: "bg-red-500/20 text-red-400" },
-    { value: "neutral", label: "😐 普通", color: "bg-gray-500/20 text-gray-400" },
+    { value: "happy", label: "😊 嬉しい", color: "bg-yellow-500/20 text-yellow-400", emoji: "😊" },
+    { value: "peaceful", label: "😌 穏やか", color: "bg-green-500/20 text-green-400", emoji: "😌" },
+    { value: "excited", label: "🤩 ワクワク", color: "bg-pink-500/20 text-pink-400", emoji: "🤩" },
+    { value: "tired", label: "😴 疲れた", color: "bg-blue-500/20 text-blue-400", emoji: "😴" },
+    { value: "sad", label: "😢 悲しい", color: "bg-indigo-500/20 text-indigo-400", emoji: "😢" },
+    { value: "anxious", label: "😰 不安", color: "bg-purple-500/20 text-purple-400", emoji: "😰" },
+    { value: "angry", label: "😠 怒り", color: "bg-red-500/20 text-red-400", emoji: "😠" },
+    { value: "neutral", label: "😐 普通", color: "bg-gray-500/20 text-gray-400", emoji: "😐" },
 ];
 
 interface DiaryEntry {
@@ -41,6 +41,11 @@ export default function DiaryPage() {
     const [generateAI, setGenerateAI] = useState(true);
     const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
     const [collapsedMonths, setCollapsedMonths] = useState<Set<string>>(new Set());
+
+    // フィルター用の状態
+    const [filterMood, setFilterMood] = useState<string | null>(null);
+    const [filterDate, setFilterDate] = useState<string>("");
+    const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -69,10 +74,30 @@ export default function DiaryPage() {
         }
     }, [status]);
 
+    // フィルタリングされたエントリー
+    const filteredEntries = useMemo(() => {
+        let result = entries;
+
+        // 感情フィルター
+        if (filterMood) {
+            result = result.filter((entry) => entry.mood === filterMood);
+        }
+
+        // 日付フィルター
+        if (filterDate) {
+            result = result.filter((entry) => {
+                const entryDate = new Date(entry.createdAt).toISOString().split("T")[0];
+                return entryDate === filterDate;
+            });
+        }
+
+        return result;
+    }, [entries, filterMood, filterDate]);
+
     // 月別にグループ化
     const groupedEntries = useMemo(() => {
         const groups: GroupedEntries = {};
-        entries.forEach((entry) => {
+        filteredEntries.forEach((entry) => {
             const date = new Date(entry.createdAt);
             const key = `${date.getFullYear()}年${date.getMonth() + 1}月`;
             if (!groups[key]) {
@@ -81,11 +106,10 @@ export default function DiaryPage() {
             groups[key].push(entry);
         });
         return groups;
-    }, [entries]);
+    }, [filteredEntries]);
 
     const sortedMonths = useMemo(() => {
         return Object.keys(groupedEntries).sort((a, b) => {
-            // 新しい月が上に来るようにソート
             const [yearA, monthA] = a.match(/\d+/g)?.map(Number) || [0, 0];
             const [yearB, monthB] = b.match(/\d+/g)?.map(Number) || [0, 0];
             if (yearA !== yearB) return yearB - yearA;
@@ -160,6 +184,13 @@ export default function DiaryPage() {
         });
     };
 
+    const clearFilters = () => {
+        setFilterMood(null);
+        setFilterDate("");
+    };
+
+    const hasActiveFilters = filterMood !== null || filterDate !== "";
+
     const formatDate = (dateStr: string) => {
         const date = new Date(dateStr);
         return date.toLocaleDateString("ja-JP", {
@@ -212,8 +243,64 @@ export default function DiaryPage() {
                         </svg>
                     </Link>
                     <h1 className="text-white font-bold text-lg">日記</h1>
-                    <span className="text-white/40 text-sm ml-auto">{entries.length}件</span>
+                    <span className="text-white/40 text-sm">{filteredEntries.length}件</span>
+
+                    {/* フィルターボタン */}
+                    <button
+                        onClick={() => setShowFilters(!showFilters)}
+                        className={`ml-auto p-2 rounded-full transition-colors ${hasActiveFilters ? "bg-pink-500/30 text-pink-300" : "hover:bg-white/5 text-white/60"
+                            }`}
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                    </button>
                 </div>
+
+                {/* フィルターパネル */}
+                {showFilters && (
+                    <div className="border-t border-white/5 px-4 py-3 space-y-3">
+                        {/* 感情フィルター */}
+                        <div>
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-white/60 text-sm">感情で絞り込み</span>
+                                {hasActiveFilters && (
+                                    <button
+                                        onClick={clearFilters}
+                                        className="text-pink-400 text-xs hover:underline"
+                                    >
+                                        フィルター解除
+                                    </button>
+                                )}
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                {MOODS.map((mood) => (
+                                    <button
+                                        key={mood.value}
+                                        onClick={() => setFilterMood(filterMood === mood.value ? null : mood.value)}
+                                        className={`px-2 py-1 rounded-full text-xs transition-all ${filterMood === mood.value
+                                                ? mood.color + " ring-2 ring-white/30"
+                                                : "bg-white/5 text-white/60 hover:bg-white/10"
+                                            }`}
+                                    >
+                                        {mood.emoji}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* 日付フィルター */}
+                        <div>
+                            <span className="text-white/60 text-sm block mb-2">日付で絞り込み</span>
+                            <input
+                                type="date"
+                                value={filterDate}
+                                onChange={(e) => setFilterDate(e.target.value)}
+                                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/50 w-full"
+                            />
+                        </div>
+                    </div>
+                )}
             </header>
 
             <main className="max-w-lg mx-auto px-4 py-6 space-y-4">
@@ -307,12 +394,36 @@ export default function DiaryPage() {
                     </div>
                 )}
 
+                {/* フィルター適用中の表示 */}
+                {hasActiveFilters && (
+                    <div className="bg-pink-500/10 border border-pink-500/20 rounded-xl p-3 flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-sm">
+                            <span className="text-pink-300">🔍</span>
+                            <span className="text-white/70">
+                                {filterMood && getMoodInfo(filterMood)?.label}
+                                {filterMood && filterDate && " · "}
+                                {filterDate && filterDate}
+                            </span>
+                        </div>
+                        <button
+                            onClick={clearFilters}
+                            className="text-white/40 hover:text-white text-xs"
+                        >
+                            解除
+                        </button>
+                    </div>
+                )}
+
                 {/* 日記一覧（月別グループ） */}
-                {entries.length === 0 ? (
+                {filteredEntries.length === 0 ? (
                     <div className="text-center py-12">
-                        <div className="text-4xl mb-3">📔</div>
-                        <p className="text-white/40">まだ日記がありません</p>
-                        <p className="text-white/30 text-sm">最初の一歩を踏み出そう</p>
+                        <div className="text-4xl mb-3">{hasActiveFilters ? "🔍" : "📔"}</div>
+                        <p className="text-white/40">
+                            {hasActiveFilters ? "該当する日記がありません" : "まだ日記がありません"}
+                        </p>
+                        <p className="text-white/30 text-sm">
+                            {hasActiveFilters ? "フィルターを変更してみてください" : "最初の一歩を踏み出そう"}
+                        </p>
                     </div>
                 ) : (
                     <div className="space-y-4">
@@ -365,7 +476,7 @@ export default function DiaryPage() {
                                                                     </span>
                                                                     {moodInfo && (
                                                                         <span className="text-sm shrink-0">
-                                                                            {moodInfo.label.split(" ")[0]}
+                                                                            {moodInfo.emoji}
                                                                         </span>
                                                                     )}
                                                                     {!isExpanded && (
