@@ -23,6 +23,7 @@ export default function SettingsPage() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState("");
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+    const [isPartnerSettingsOpen, setIsPartnerSettingsOpen] = useState(false);
 
     // 認証チェック
     useEffect(() => {
@@ -167,10 +168,23 @@ export default function SettingsPage() {
 
                 {/* パートナー設定 */}
                 <section className="glass rounded-2xl p-4 border border-white/5">
-                    <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
-                        <span>💕</span> パートナー設定
-                    </h2>
-                    <div className="space-y-4">
+                    <button
+                        onClick={() => setIsPartnerSettingsOpen(!isPartnerSettingsOpen)}
+                        className="w-full flex items-center justify-between text-white font-semibold"
+                    >
+                        <span className="flex items-center gap-2">
+                            <span>💕</span> パートナー設定
+                        </span>
+                        <svg
+                            className={`w-5 h-5 transition-transform ${isPartnerSettingsOpen ? 'rotate-180' : ''}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div className={`space-y-4 overflow-hidden transition-all duration-300 ${isPartnerSettingsOpen ? 'mt-4 max-h-[600px] opacity-100' : 'max-h-0 opacity-0'}`}>
                         <div>
                             <label className="block text-white/60 text-xs mb-2">パートナーの呼び方（名前）</label>
                             <input
