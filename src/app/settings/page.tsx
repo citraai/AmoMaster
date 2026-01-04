@@ -74,7 +74,8 @@ export default function SettingsPage() {
 
     const handleLogout = async () => {
         if (confirm("ログアウトしますか？")) {
-            await signOut({ callbackUrl: "/login" });
+            await signOut({ redirect: false });
+            window.location.href = "/login";
         }
     };
 
@@ -92,9 +93,10 @@ export default function SettingsPage() {
             const result = await dataService.deleteAccount();
 
             if (result.success) {
-                // 即座にログアウトしてログイン画面へ強制リダイレクト
-                await signOut({ redirect: true, callbackUrl: "/login" });
-                return; // これ以降の処理を停止
+                // セッションを破棄してから手動でリダイレクト
+                await signOut({ redirect: false });
+                window.location.href = "/login";
+                return;
             } else {
                 setDeleteError(result.error || "削除に失敗しました");
             }
