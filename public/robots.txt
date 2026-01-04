@@ -1,0 +1,20 @@
+# AmoMaster - robots.txt
+# https://amomaster.citra-ai-project.workers.dev
+
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /terms
+Allow: /privacy
+
+# 認証が必要なページはクロール不要
+Disallow: /records
+Disallow: /diary
+Disallow: /master
+Disallow: /mine-checker
+Disallow: /settings
+Disallow: /onboarding
+Disallow: /api/
+
+# サイトマップ
+Sitemap: https://amomaster.citra-ai-project.workers.dev/sitemap.xml
