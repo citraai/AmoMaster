@@ -47,6 +47,10 @@ export default function DiaryPage() {
     const [filterDate, setFilterDate] = useState<string>("");
     const [showFilters, setShowFilters] = useState(false);
 
+    // AIアドバイスモーダル用の状態
+    const [showAIModal, setShowAIModal] = useState(false);
+    const [aiInsightContent, setAiInsightContent] = useState<string>("");
+
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/login");
@@ -133,10 +137,18 @@ export default function DiaryPage() {
             });
 
             if (response.ok) {
+                const savedEntry = await response.json();
+
                 setContent("");
                 setSelectedMood(null);
                 setIsWriting(false);
-                loadEntries();
+                await loadEntries();
+
+                // AIアドバイスを希望する場合はモーダルで表示
+                if (generateAI && savedEntry.aiInsight) {
+                    setAiInsightContent(savedEntry.aiInsight);
+                    setShowAIModal(true);
+                }
             }
         } catch (error) {
             console.error("日記の保存エラー:", error);
@@ -550,6 +562,36 @@ export default function DiaryPage() {
                     </div>
                 )}
             </main>
+
+            {/* AIアドバイスモーダル */}
+            {showAIModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80">
+                    <div className="glass rounded-2xl p-6 max-w-md w-full border border-pink-500/30 animate-fade-in">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-2xl">
+                                🧙‍♂️
+                            </div>
+                            <div>
+                                <h3 className="text-white font-bold text-lg">AIからのアドバイス</h3>
+                                <p className="text-white/50 text-xs">日記を読んで考えてみたよ</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white/5 rounded-xl p-4 mb-6">
+                            <p className="text-white/90 text-sm leading-relaxed whitespace-pre-wrap">
+                                {aiInsightContent}
+                            </p>
+                        </div>
+
+                        <button
+                            onClick={() => setShowAIModal(false)}
+                            className="w-full py-3 bg-gradient-to-r from-pink-600 to-red-600 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
+                        >
+                            閉じる
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* ナビゲーション */}
             <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/5">
