@@ -11,6 +11,8 @@ export default function SettingsPage() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const [partnerName, setPartnerName] = useState("パートナー");
+    const [gender, setGender] = useState("");
+    const [partnerPronoun, setPartnerPronoun] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [saveMessage, setSaveMessage] = useState("");
     const [isLoading, setIsLoading] = useState(true);
@@ -34,9 +36,16 @@ export default function SettingsPage() {
         async function loadSettings() {
             if (status !== "authenticated") return;
             try {
-                const settings = await dataService.getSettings();
+                const [settings, profile] = await Promise.all([
+                    dataService.getSettings(),
+                    dataService.getUserProfile(),
+                ]);
                 if (settings && settings.partnerName) {
                     setPartnerName(settings.partnerName);
+                }
+                if (profile) {
+                    setGender(profile.gender || "");
+                    setPartnerPronoun(profile.partnerPronoun || "");
                 }
             } catch (error) {
                 console.error("設定読み込みエラー:", error);
@@ -50,7 +59,10 @@ export default function SettingsPage() {
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            await dataService.updateSettings({ partnerName });
+            await Promise.all([
+                dataService.updateSettings({ partnerName }),
+                dataService.updateUserProfile({ gender, partnerPronoun }),
+            ]);
             setSaveMessage("保存しました！");
         } catch (error) {
             console.error("保存エラー:", error);
@@ -157,7 +169,7 @@ export default function SettingsPage() {
                     </h2>
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-white/60 text-xs mb-2">パートナーの呼び方</label>
+                            <label className="block text-white/60 text-xs mb-2">パートナーの呼び方（名前）</label>
                             <input
                                 type="text"
                                 value={partnerName}
@@ -166,6 +178,53 @@ export default function SettingsPage() {
                                 placeholder="例: 彼女、彼、パートナー"
                             />
                         </div>
+
+                        {/* 相手の呼び方（代名詞） */}
+                        <div>
+                            <label className="block text-white/60 text-xs mb-2">相手の呼び方（代名詞）</label>
+                            <div className="grid grid-cols-3 gap-2">
+                                {[
+                                    { value: "she", label: "彼女" },
+                                    { value: "he", label: "彼" },
+                                    { value: "partner", label: "パートナー" },
+                                ].map((option) => (
+                                    <button
+                                        key={option.value}
+                                        onClick={() => setPartnerPronoun(option.value)}
+                                        className={`py-2 px-3 rounded-xl text-sm font-medium transition-all ${partnerPronoun === option.value
+                                                ? "bg-pink-600 text-white"
+                                                : "bg-white/5 text-white/70 hover:bg-white/10"
+                                            }`}
+                                    >
+                                        {option.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* 自分の性別 */}
+                        <div>
+                            <label className="block text-white/60 text-xs mb-2">あなたの性別</label>
+                            <div className="grid grid-cols-3 gap-2">
+                                {[
+                                    { value: "male", label: "男性" },
+                                    { value: "female", label: "女性" },
+                                    { value: "other", label: "その他" },
+                                ].map((option) => (
+                                    <button
+                                        key={option.value}
+                                        onClick={() => setGender(option.value)}
+                                        className={`py-2 px-3 rounded-xl text-sm font-medium transition-all ${gender === option.value
+                                                ? "bg-pink-600 text-white"
+                                                : "bg-white/5 text-white/70 hover:bg-white/10"
+                                            }`}
+                                    >
+                                        {option.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
                         <button
                             onClick={handleSave}
                             disabled={isSaving}
