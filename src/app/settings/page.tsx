@@ -92,8 +92,9 @@ export default function SettingsPage() {
             const result = await dataService.deleteAccount();
 
             if (result.success) {
-                // ログアウトしてログイン画面へ
-                await signOut({ callbackUrl: "/login" });
+                // 即座にログアウトしてログイン画面へ強制リダイレクト
+                await signOut({ redirect: true, callbackUrl: "/login" });
+                return; // これ以降の処理を停止
             } else {
                 setDeleteError(result.error || "削除に失敗しました");
             }
@@ -192,8 +193,8 @@ export default function SettingsPage() {
                                         key={option.value}
                                         onClick={() => setPartnerPronoun(option.value)}
                                         className={`py-2 px-3 rounded-xl text-sm font-medium transition-all ${partnerPronoun === option.value
-                                                ? "bg-pink-600 text-white"
-                                                : "bg-white/5 text-white/70 hover:bg-white/10"
+                                            ? "bg-pink-600 text-white"
+                                            : "bg-white/5 text-white/70 hover:bg-white/10"
                                             }`}
                                     >
                                         {option.label}
@@ -215,8 +216,8 @@ export default function SettingsPage() {
                                         key={option.value}
                                         onClick={() => setGender(option.value)}
                                         className={`py-2 px-3 rounded-xl text-sm font-medium transition-all ${gender === option.value
-                                                ? "bg-pink-600 text-white"
-                                                : "bg-white/5 text-white/70 hover:bg-white/10"
+                                            ? "bg-pink-600 text-white"
+                                            : "bg-white/5 text-white/70 hover:bg-white/10"
                                             }`}
                                     >
                                         {option.label}
