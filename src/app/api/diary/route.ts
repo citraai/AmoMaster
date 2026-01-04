@@ -58,11 +58,11 @@ export async function GET(request: NextRequest) {
     try {
         const session = await auth();
 
-        if (!session?.user?.id) {
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const userId = session.user.id;
+        const userId = session.user.email;
         const { searchParams } = new URL(request.url);
         const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : undefined;
 
@@ -80,11 +80,11 @@ export async function POST(request: NextRequest) {
     try {
         const session = await auth();
 
-        if (!session?.user?.id) {
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const userId = session.user.id;
+        const userId = session.user.email;
         const body = await request.json();
         const { content, mood, generateInsight } = body;
 
@@ -104,7 +104,8 @@ export async function POST(request: NextRequest) {
 
         const result = await dbOps.createDiaryEntry(userId, { content, mood, aiInsight });
 
-        return NextResponse.json({ success: true, data: result });
+        // モーダル表示のため直接結果を返す
+        return NextResponse.json(result);
     } catch (error) {
         console.error("[API] Diary POST Error:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -116,11 +117,11 @@ export async function PUT(request: NextRequest) {
     try {
         const session = await auth();
 
-        if (!session?.user?.id) {
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const userId = session.user.id;
+        const userId = session.user.email;
         const body = await request.json();
         const { id, content, mood } = body;
 
@@ -142,11 +143,11 @@ export async function DELETE(request: NextRequest) {
     try {
         const session = await auth();
 
-        if (!session?.user?.id) {
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const userId = session.user.id;
+        const userId = session.user.email;
         const { searchParams } = new URL(request.url);
         const id = searchParams.get("id");
 
