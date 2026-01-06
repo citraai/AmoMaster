@@ -37,6 +37,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <head>
+        <meta name="google-site-verification" content="kf_T_Cu27UkStf050FDbHcy0s-eWqZxxteD6wZVb4z8" />
+      </head>
       <body
         className={`${zenMaruGothic.variable} ${kiwiMaru.variable} antialiased min-h-screen`}
         style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
