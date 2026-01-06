@@ -69,11 +69,16 @@ export default function Home() {
 
     try {
       setIsLoading(true);
-      const [prefs, quotes, events] = await Promise.all([
+      const [prefsData, quotesData, eventsData] = await Promise.all([
         dataService.getPreferences(),
         dataService.getQuotes(),
         dataService.getEvents(),
       ]);
+
+      // nullやundefinedの場合は空配列にフォールバック
+      const prefs = Array.isArray(prefsData) ? prefsData : [];
+      const quotes = Array.isArray(quotesData) ? quotesData : [];
+      const events = Array.isArray(eventsData) ? eventsData : [];
 
       // 最近の記録を結合（直近5件）
       const allRecords: RecentRecord[] = [
