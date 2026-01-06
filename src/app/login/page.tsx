@@ -117,7 +117,7 @@ export default function LoginPage() {
                     {/* Googleログイン */}
                     <button
                         type="button"
-                        onClick={() => signIn("google", { callbackUrl: "/" })}
+                        onClick={() => signIn("google", { callbackUrl: "/auth/callback" })}
                         className="w-full bg-white text-gray-800 font-medium py-3 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors"
                     >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -132,7 +132,7 @@ export default function LoginPage() {
                     {/* LINEログイン */}
                     <button
                         type="button"
-                        onClick={() => signIn("line", { callbackUrl: "/" })}
+                        onClick={() => signIn("line", { callbackUrl: "/auth/callback" })}
                         className="w-full bg-[#06C755] text-white font-medium py-3 rounded-lg flex items-center justify-center gap-3 hover:bg-[#05B34C] transition-colors"
                     >
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
