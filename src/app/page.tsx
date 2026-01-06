@@ -33,6 +33,36 @@ export default function Home() {
     }
   }, [status, router]);
 
+  // オンボーディングチェック（sessionStorageで一度だけチェック）
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      if (status !== "authenticated") return;
+
+      // 既にチェック済みならスキップ
+      if (typeof window !== "undefined" && sessionStorage.getItem("onboarding_checked")) {
+        return;
+      }
+
+      try {
+        const profile = await dataService.getUserProfile();
+        // 性別が設定されていない場合はオンボーディングへ
+        if (!profile?.gender) {
+          router.push("/onboarding");
+        } else {
+          // チェック完了フラグを設定
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("onboarding_checked", "true");
+          }
+        }
+      } catch (error) {
+        console.error("[Home] Profile check error:", error);
+        // エラー時はオンボーディングへ
+        router.push("/onboarding");
+      }
+    };
+    checkOnboarding();
+  }, [status, router]);
+
   // データ読み込み
   const loadData = async () => {
     if (status !== "authenticated") return;
