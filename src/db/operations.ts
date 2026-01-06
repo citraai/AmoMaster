@@ -120,6 +120,29 @@ export async function getUserProfile(userId: string) {
     return results[0] || null;
 }
 
+// Email-based profile functions for OAuth users
+export async function getUserProfileByEmail(email: string) {
+    const db = await getDb();
+    const results = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    return results[0] || null;
+}
+
+export async function updateUserProfileByEmail(email: string, data: {
+    gender?: string;
+    genderCustom?: string;
+    partnerPronoun?: string;
+}) {
+    const db = await getDb();
+    await db.update(users)
+        .set({
+            gender: data.gender,
+            genderCustom: data.genderCustom,
+            partnerPronoun: data.partnerPronoun,
+            updatedAt: new Date().toISOString(),
+        })
+        .where(eq(users.email, email));
+}
+
 // ==================== Preferences ====================
 
 export async function createPreference(userId: string, data: {

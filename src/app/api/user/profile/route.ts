@@ -10,17 +10,13 @@ export async function GET() {
     try {
         const session = await auth();
 
-
-        if (!session?.user?.id) {
-
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const profile = await dbOps.getUserProfile(session.user.id);
-
+        const profile = await dbOps.getUserProfileByEmail(session.user.email);
 
         if (!profile) {
-
             return NextResponse.json({
                 partnerPronoun: "partner",
                 gender: null,
@@ -31,9 +27,8 @@ export async function GET() {
             partnerPronoun: profile.partnerPronoun || "partner",
             gender: profile.gender,
             name: profile.name,
-            partnerName: profile.partnerName,  // パートナーの呼び方
+            partnerName: profile.partnerName,
         };
-
 
         return NextResponse.json(response);
     } catch (error) {

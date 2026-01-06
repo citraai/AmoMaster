@@ -11,11 +11,17 @@ export async function GET(request: NextRequest) {
     try {
         const session = await auth();
 
-        if (!session?.user?.id) {
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const userId = session.user.id;
+        // emailからユーザーを取得
+        const user = await dbOps.getUserByEmail(session.user.email);
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+        const userId = user.id;
+
         const { searchParams } = new URL(request.url);
         const type = searchParams.get("type");
 
@@ -54,11 +60,16 @@ export async function POST(request: NextRequest) {
     try {
         const session = await auth();
 
-        if (!session?.user?.id) {
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const userId = session.user.id;
+        // emailからユーザーを取得
+        const user = await dbOps.getUserByEmail(session.user.email);
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+        const userId = user.id;
         const body = await request.json();
         const { type, data } = body;
 
@@ -92,11 +103,16 @@ export async function DELETE(request: NextRequest) {
     try {
         const session = await auth();
 
-        if (!session?.user?.id) {
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const userId = session.user.id;
+        // emailからユーザーを取得
+        const user = await dbOps.getUserByEmail(session.user.email);
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+        const userId = user.id;
         const { searchParams } = new URL(request.url);
         const type = searchParams.get("type");
         const id = searchParams.get("id");
@@ -129,11 +145,16 @@ export async function PUT(request: NextRequest) {
     try {
         const session = await auth();
 
-        if (!session?.user?.id) {
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const userId = session.user.id;
+        // emailからユーザーを取得
+        const user = await dbOps.getUserByEmail(session.user.email);
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+        const userId = user.id;
         const body = await request.json();
         const { type, id, data } = body;
 
