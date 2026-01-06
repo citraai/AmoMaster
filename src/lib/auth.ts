@@ -63,9 +63,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // OAuthログインは常に許可
             return true;
         },
+        async jwt({ token, user, account }) {
+            if (user) {
+                token.sub = user.id;
+            }
+            // LINEユーザーのためにアカウント情報を保存
+            if (account) {
+                token.provider = account.provider;
+            }
+            return token;
+        },
         async session({ session, token }) {
             if (token?.sub) {
                 session.user.id = token.sub;
+            }
+            // LINEユーザーはemailがないので、仮のemailを生成
+            if (!session.user.email && token.sub && token.provider === "line") {
+                session.user.email = `${token.sub}@line.user`;
             }
             // OAuthユーザーのDB登録をここで行う
             if (session.user?.email) {
@@ -76,12 +90,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
             }
             return session;
-        },
-        async jwt({ token, user }) {
-            if (user) {
-                token.sub = user.id;
-            }
-            return token;
         },
     },
     session: {
