@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   keywords: ["恋愛", "パートナー", "デート", "プレゼント", "記念日"],
   authors: [{ name: "AmoMaster" }],
   verification: {
-    google: "google36ae3b491f42feaa",
+    google: "kf_T_Cu27UkStf050FDbHcy0s-eWqZxxteD6wZVb4z8",
   },
   openGraph: {
     title: "AmoMaster - パートナーを世界一幸せに",
