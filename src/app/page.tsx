@@ -33,28 +33,6 @@ export default function Home() {
     }
   }, [status, router]);
 
-  // オンボーディングチェック（OAuth用）
-  const [onboardingChecked, setOnboardingChecked] = useState(false);
-
-  useEffect(() => {
-    const checkOnboarding = async () => {
-      if (status === "authenticated" && !onboardingChecked) {
-        setOnboardingChecked(true);
-        try {
-          const profile = await dataService.getUserProfile();
-          // 性別が設定されていない場合はオンボーディングへ
-          if (!profile?.gender) {
-            router.push("/onboarding");
-          }
-        } catch (error) {
-          console.error("[Home] Profile check error:", error);
-          // エラー時は何もしない（ホームに留まる）
-        }
-      }
-    };
-    checkOnboarding();
-  }, [status, router, onboardingChecked]);
-
   // データ読み込み
   const loadData = async () => {
     if (status !== "authenticated") return;

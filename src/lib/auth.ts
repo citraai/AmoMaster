@@ -3,23 +3,32 @@ import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import * as dbOps from "@/db/operations";
 
-// LINE Provider (OpenID Connect)
+// LINE Provider (OAuth2)
 const LineProvider = {
     id: "line",
     name: "LINE",
-    type: "oidc" as const,
-    issuer: "https://access.line.me",
-    clientId: process.env.LINE_CLIENT_ID,
-    clientSecret: process.env.LINE_CLIENT_SECRET,
+    type: "oauth" as const,
+    clientId: process.env.LINE_CLIENT_ID!,
+    clientSecret: process.env.LINE_CLIENT_SECRET!,
     authorization: {
-        params: { scope: "profile openid" },
+        url: "https://access.line.me/oauth2/v2.1/authorize",
+        params: {
+            scope: "profile openid",
+            response_type: "code",
+        },
     },
-    profile(profile: { sub: string; name?: string; picture?: string }) {
+    token: {
+        url: "https://api.line.me/oauth2/v2.1/token",
+    },
+    userinfo: {
+        url: "https://api.line.me/v2/profile",
+    },
+    profile(profile: { userId: string; displayName: string; pictureUrl?: string }) {
         return {
-            id: profile.sub,
-            name: profile.name,
-            image: profile.picture,
-            email: `${profile.sub}@line.user`,
+            id: profile.userId,
+            name: profile.displayName,
+            image: profile.pictureUrl,
+            email: `${profile.userId}@line.user`,
         };
     },
 };
