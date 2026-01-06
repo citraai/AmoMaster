@@ -1,37 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
+import Line from "next-auth/providers/line";
 import * as dbOps from "@/db/operations";
-
-// LINE Provider (OAuth2)
-const LineProvider = {
-    id: "line",
-    name: "LINE",
-    type: "oauth" as const,
-    clientId: process.env.LINE_CLIENT_ID!,
-    clientSecret: process.env.LINE_CLIENT_SECRET!,
-    authorization: {
-        url: "https://access.line.me/oauth2/v2.1/authorize",
-        params: {
-            scope: "profile openid",
-            response_type: "code",
-        },
-    },
-    token: {
-        url: "https://api.line.me/oauth2/v2.1/token",
-    },
-    userinfo: {
-        url: "https://api.line.me/v2/profile",
-    },
-    profile(profile: { userId: string; displayName: string; pictureUrl?: string }) {
-        return {
-            id: profile.userId,
-            name: profile.displayName,
-            image: profile.pictureUrl,
-            email: `${profile.userId}@line.user`,
-        };
-    },
-};
 
 // シンプルなCredentials認証 + OAuth
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -43,7 +14,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         }),
         // LINE Login
-        LineProvider,
+        Line({
+            clientId: process.env.LINE_CLIENT_ID,
+            clientSecret: process.env.LINE_CLIENT_SECRET,
+        }),
         // Email/Password
         Credentials({
             name: "email",
