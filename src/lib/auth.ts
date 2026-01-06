@@ -78,21 +78,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         newUser: "/onboarding",
     },
     callbacks: {
-        async signIn({ user, account }) {
-            // OAuthログイン時にDBにユーザーを登録
-            if (account?.provider === "google" || account?.provider === "line") {
-                try {
-                    const email = user.email || `${user.id}@${account.provider}.user`;
-                    await dbOps.createOrGetUser(email, user.name || undefined);
-                } catch (error) {
-                    console.error("[Auth] OAuth user creation error:", error);
-                }
-            }
+        async signIn() {
+            // OAuthログインは常に許可
             return true;
         },
         async session({ session, token }) {
             if (token?.sub) {
                 session.user.id = token.sub;
+            }
+            // OAuthユーザーのDB登録をここで行う
+            if (session.user?.email) {
+                try {
+                    await dbOps.createOrGetUser(session.user.email, session.user.name || undefined);
+                } catch (error) {
+                    console.error("[Auth] Session user creation error:", error);
+                }
             }
             return session;
         },
