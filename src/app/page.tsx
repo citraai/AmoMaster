@@ -33,6 +33,26 @@ export default function Home() {
     }
   }, [status, router]);
 
+  // オンボーディングチェック（OAuth用）
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      if (status === "authenticated") {
+        try {
+          const profile = await dataService.getUserProfile();
+          // 性別が設定されていない場合はオンボーディングへ
+          if (!profile?.gender) {
+            router.push("/onboarding");
+          }
+        } catch (error) {
+          console.error("[Home] Profile check error:", error);
+          // エラー時もオンボーディングへ
+          router.push("/onboarding");
+        }
+      }
+    };
+    checkOnboarding();
+  }, [status, router]);
+
   // データ読み込み
   const loadData = async () => {
     if (status !== "authenticated") return;
