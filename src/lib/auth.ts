@@ -59,17 +59,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         newUser: "/onboarding",
     },
     callbacks: {
-        async signIn() {
-            // OAuthログインは常に許可
+        async signIn({ user, account }) {
+            // OAuthログイン時にDBにユーザーを登録
+            if (account?.provider === "google" || account?.provider === "line") {
+                try {
+                    // LINE用のメール生成
+                    let email = user.email;
+                    if (!email && account.provider === "line" && account.providerAccountId) {
+                        email = `${account.providerAccountId}@line.user`;
+                    }
+                    if (email) {
+                        await dbOps.createOrGetUser(email, user.name || undefined);
+                    }
+                } catch (error) {
+                    console.error("[Auth] OAuth user creation error:", error);
+                }
+            }
             return true;
         },
         async jwt({ token, user, account }) {
             if (user) {
                 token.sub = user.id;
             }
-            // LINEユーザーのためにアカウント情報を保存
+            // アカウント情報を保存（初回ログイン時のみ）
             if (account) {
                 token.provider = account.provider;
+                token.providerAccountId = account.providerAccountId;
             }
             return token;
         },
@@ -77,17 +92,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (token?.sub) {
                 session.user.id = token.sub;
             }
-            // LINEユーザーはemailがないので、仮のemailを生成
-            if (!session.user.email && token.sub && token.provider === "line") {
-                session.user.email = `${token.sub}@line.user`;
-            }
-            // OAuthユーザーのDB登録をここで行う
-            if (session.user?.email) {
-                try {
-                    await dbOps.createOrGetUser(session.user.email, session.user.name || undefined);
-                } catch (error) {
-                    console.error("[Auth] Session user creation error:", error);
-                }
+            // LINEユーザーはemailがないので、providerAccountIdから安定したemailを生成
+            if (!session.user.email && token.providerAccountId && token.provider === "line") {
+                session.user.email = `${token.providerAccountId}@line.user`;
             }
             return session;
         },
