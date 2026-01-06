@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   description: "厳しく愛ある指導で、あなたを最高のパートナーへ育成するスパルタ・コンシェルジュ",
   keywords: ["恋愛", "パートナー", "デート", "プレゼント", "記念日"],
   authors: [{ name: "AmoMaster" }],
+  verification: {
+    google: "google36ae3b491f42feaa",
+  },
   openGraph: {
     title: "AmoMaster - パートナーを世界一幸せに",
     description: "厳しく愛ある指導で、あなたを最高のパートナーへ育成するスパルタ・コンシェルジュ",
