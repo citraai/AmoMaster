@@ -39,16 +39,24 @@ export default function Home() {
       if (status !== "authenticated") return;
 
       // 既にチェック済みならスキップ
-      if (typeof window !== "undefined" && sessionStorage.getItem("onboarding_checked")) {
+      const checked = typeof window !== "undefined" && sessionStorage.getItem("onboarding_checked");
+      if (checked) {
+        console.log("[Home] Onboarding already checked, skipping");
         return;
       }
 
       try {
         const profile = await dataService.getUserProfile();
-        // 性別が設定されていない場合はオンボーディングへ
-        if (!profile?.gender) {
+        console.log("[Home] Profile check:", profile);
+
+        // 性別がnull/undefinedの場合はオンボーディングへ
+        const hasGender = profile && profile.gender && profile.gender !== "null" && profile.gender !== "";
+
+        if (!hasGender) {
+          console.log("[Home] No gender set, redirecting to onboarding");
           router.push("/onboarding");
         } else {
+          console.log("[Home] Gender set, staying on home");
           // チェック完了フラグを設定
           if (typeof window !== "undefined") {
             sessionStorage.setItem("onboarding_checked", "true");
