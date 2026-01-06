@@ -73,6 +73,31 @@ export async function getOrCreateUser(email: string, name?: string) {
     return registerUser(email, "temp_password", name);
 }
 
+// OAuth用：パスワードなしでユーザー作成/取得
+export async function createOrGetUser(email: string, name?: string) {
+    const db = await getDb();
+    const existingUser = await db.select().from(users).where(eq(users.email, email)).get();
+
+    if (existingUser) {
+        return existingUser;
+    }
+
+    const id = crypto.randomUUID();
+    const createdAt = new Date().toISOString();
+    const trialStartDate = createdAt.split("T")[0];
+
+    await db.insert(users).values({
+        id,
+        email,
+        name: name || email.split("@")[0],
+        createdAt,
+        passwordHash: "", // OAuthユーザーはパスワードなし
+        trialStartDate,
+    });
+
+    return { id, email, name: name || email.split("@")[0], createdAt, trialStartDate };
+}
+
 export async function updateUserProfile(userId: string, data: {
     gender?: string;
     genderCustom?: string;

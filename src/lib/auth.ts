@@ -1,11 +1,43 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import * as dbOps from "@/db/operations";
 
-// シンプルなCredentials認証
+// LINE Provider (カスタム実装)
+const LineProvider = {
+    id: "line",
+    name: "LINE",
+    type: "oauth" as const,
+    authorization: {
+        url: "https://access.line.me/oauth2/v2.1/authorize",
+        params: { scope: "profile openid email" },
+    },
+    token: "https://api.line.me/oauth2/v2.1/token",
+    userinfo: "https://api.line.me/v2/profile",
+    clientId: process.env.LINE_CLIENT_ID,
+    clientSecret: process.env.LINE_CLIENT_SECRET,
+    profile(profile: { userId: string; displayName: string; pictureUrl?: string }) {
+        return {
+            id: profile.userId,
+            name: profile.displayName,
+            image: profile.pictureUrl,
+            email: `${profile.userId}@line.user`,
+        };
+    },
+};
+
+// シンプルなCredentials認証 + OAuth
 export const { handlers, signIn, signOut, auth } = NextAuth({
     trustHost: true, // Cloudflare Workers用
     providers: [
+        // Google OAuth
+        Google({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        }),
+        // LINE Login
+        LineProvider,
+        // Email/Password
         Credentials({
             name: "email",
             credentials: {
@@ -46,6 +78,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         newUser: "/onboarding",
     },
     callbacks: {
+        async signIn({ user, account }) {
+            // OAuthログイン時にDBにユーザーを登録
+            if (account?.provider === "google" || account?.provider === "line") {
+                try {
+                    const email = user.email || `${user.id}@${account.provider}.user`;
+                    await dbOps.createOrGetUser(email, user.name || undefined);
+                } catch (error) {
+                    console.error("[Auth] OAuth user creation error:", error);
+                }
+            }
+            return true;
+        },
         async session({ session, token }) {
             if (token?.sub) {
                 session.user.id = token.sub;
