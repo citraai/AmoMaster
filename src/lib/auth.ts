@@ -3,25 +3,23 @@ import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import * as dbOps from "@/db/operations";
 
-// LINE Provider (カスタム実装)
+// LINE Provider (OpenID Connect)
 const LineProvider = {
     id: "line",
     name: "LINE",
-    type: "oauth" as const,
-    authorization: {
-        url: "https://access.line.me/oauth2/v2.1/authorize",
-        params: { scope: "profile openid email" },
-    },
-    token: "https://api.line.me/oauth2/v2.1/token",
-    userinfo: "https://api.line.me/v2/profile",
+    type: "oidc" as const,
+    issuer: "https://access.line.me",
     clientId: process.env.LINE_CLIENT_ID,
     clientSecret: process.env.LINE_CLIENT_SECRET,
-    profile(profile: { userId: string; displayName: string; pictureUrl?: string }) {
+    authorization: {
+        params: { scope: "profile openid" },
+    },
+    profile(profile: { sub: string; name?: string; picture?: string }) {
         return {
-            id: profile.userId,
-            name: profile.displayName,
-            image: profile.pictureUrl,
-            email: `${profile.userId}@line.user`,
+            id: profile.sub,
+            name: profile.name,
+            image: profile.picture,
+            email: `${profile.sub}@line.user`,
         };
     },
 };
