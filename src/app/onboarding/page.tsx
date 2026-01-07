@@ -227,15 +227,7 @@ export default function OnboardingPage() {
                     </div>
                 )}
 
-                {/* スキップ（ステップ1,2のみ） */}
-                {step > 0 && (
-                    <button
-                        onClick={handleComplete}
-                        className="w-full mt-4 text-white/40 text-sm hover:text-white/60 transition-colors"
-                    >
-                        あとで設定する
-                    </button>
-                )}
+
             </div>
         </div>
     );
