@@ -123,6 +123,10 @@ export async function getPartnerNicknameFromDB(): Promise<string | undefined> {
             return undefined;
         }
         const settings = await response.json();
+        // nullチェックを追加
+        if (!settings) {
+            return undefined;
+        }
         // settingsテーブルのpartnerNameを使用
         const name = settings.partnerName;
         // デフォルト値「パートナー」以外を返す
