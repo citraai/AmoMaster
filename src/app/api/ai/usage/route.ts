@@ -33,16 +33,15 @@ export async function GET() {
     try {
         const session = await auth();
 
-        if (!session?.user?.id) {
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const userId = session.user.id;
         const today = getTodayString();
         const db = await getDb();
 
-        // ユーザー情報を取得
-        const result = await db.select().from(users).where(eq(users.id, userId));
+        // emailからユーザーを取得
+        const result = await db.select().from(users).where(eq(users.email, session.user.email));
         const user = result[0];
 
         if (!user) {
@@ -86,16 +85,15 @@ export async function POST() {
     try {
         const session = await auth();
 
-        if (!session?.user?.id) {
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const userId = session.user.id;
         const today = getTodayString();
         const db = await getDb();
 
-        // ユーザー情報を取得
-        const result = await db.select().from(users).where(eq(users.id, userId));
+        // emailからユーザーを取得
+        const result = await db.select().from(users).where(eq(users.email, session.user.email));
         const user = result[0];
 
         if (!user) {
@@ -135,7 +133,7 @@ export async function POST() {
                 trialStartDate: trialStartDate,
                 updatedAt: new Date().toISOString(),
             })
-            .where(eq(users.id, userId));
+            .where(eq(users.id, user.id));
 
         return NextResponse.json({
             success: true,
