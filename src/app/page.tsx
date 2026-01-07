@@ -36,12 +36,15 @@ export default function Home() {
   // オンボーディングチェック（sessionStorageで一度だけチェック）
   useEffect(() => {
     const checkOnboarding = async () => {
-      if (status !== "authenticated") return;
+      if (status !== "authenticated" || !session?.user?.email) return;
+
+      // ユーザー固有のキーを使用
+      const storageKey = `onboarding_checked_${session.user.email}`;
 
       // 既にチェック済みならスキップ
-      const checked = typeof window !== "undefined" && sessionStorage.getItem("onboarding_checked");
+      const checked = typeof window !== "undefined" && sessionStorage.getItem(storageKey);
       if (checked) {
-        console.log("[Home] Onboarding already checked, skipping");
+        console.log("[Home] Onboarding already checked for this user, skipping");
         return;
       }
 
@@ -59,7 +62,7 @@ export default function Home() {
           console.log("[Home] Gender set, staying on home");
           // チェック完了フラグを設定
           if (typeof window !== "undefined") {
-            sessionStorage.setItem("onboarding_checked", "true");
+            sessionStorage.setItem(storageKey, "true");
           }
         }
       } catch (error) {
@@ -69,7 +72,7 @@ export default function Home() {
       }
     };
     checkOnboarding();
-  }, [status, router]);
+  }, [status, session, router]);
 
   // データ読み込み
   const loadData = async () => {
