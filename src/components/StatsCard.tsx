@@ -37,17 +37,22 @@ export function StatsGrid() {
     useEffect(() => {
         async function loadStats() {
             try {
-                const [prefs, quotes] = await Promise.all([
+                const [prefsData, quotesData] = await Promise.all([
                     dataService.getPreferences(),
                     dataService.getQuotes(),
                 ]);
+
+                // nullやundefinedの場合は空配列にフォールバック
+                const prefs = Array.isArray(prefsData) ? prefsData : [];
+                const quotes = Array.isArray(quotesData) ? quotesData : [];
 
                 // 日記データも取得
                 let diaries: { createdAt: string }[] = [];
                 try {
                     const diaryRes = await fetch("/api/diary");
                     if (diaryRes.ok) {
-                        diaries = await diaryRes.json();
+                        const diaryData = await diaryRes.json();
+                        diaries = Array.isArray(diaryData) ? diaryData : [];
                     }
                 } catch {
                     // 日記取得エラーは無視
